@@ -14,7 +14,7 @@ tr.trTimeChecker td {
 	color: black !important;
 }
 
-tr[id]:not(.future):not(.trTimeChecker):not(.other) {
+tr[id]:not(.future):not(.trTimeChecker):not(.other):not(.header) {
 	cursor: pointer;
 }
 

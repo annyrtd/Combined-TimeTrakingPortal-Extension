@@ -192,7 +192,7 @@ function SetUp_StartTime(row, startTime) {
 		var inputTime = row.find('[idtype=inputTime]');
 		var oldValue = inputTime.val();
 		if (oldValue) {
-			inputTime.val(SumOfTime(oldValue, time));
+			inputTime.val(TCH_SumOfTime(oldValue, time));
 		} else {
 			inputTime.val(time);
 		}
@@ -209,7 +209,7 @@ function GetTimeLeftForTheTask(dayId, time){
 		var regExp = /^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$/;
 
 		if (regExp.test(value)) {
-			return SumOfTime('00:00', value);
+			return TCH_SumOfTime('00:00', value);
 		} else {
 			return '';
 		}
@@ -226,15 +226,15 @@ function GetTimeLeftForTheTask(dayId, time){
 		.map(mapTimes);
 
 	var result = '00:00';
-	time = SumOfTime('00:00', time);
+	time = TCH_SumOfTime('00:00', time);
 
 	for (var i = 0; i < startTimes.length; i++) {
 		if (startTimes[i] && finishTimes[i]) {
 			if ((time > startTimes[i]) && (time < finishTimes[i])) {
-				result = SumOfTime(result, DifferenceOfTime(finishTimes[i], time))
+				result = TCH_SumOfTime(result, TCH_DifferenceOfTime(finishTimes[i], time))
 			} else {
 				if (time <= startTimes[i]) {
-					result = SumOfTime(result, DifferenceOfTime(finishTimes[i], startTimes[i]))
+					result = TCH_SumOfTime(result, TCH_DifferenceOfTime(finishTimes[i], startTimes[i]))
 				}
 			}
 		}
@@ -258,7 +258,7 @@ function SetTableHeightForTime() {
 		height = height - conclusion.outerHeight(true) - 45;
 	}
 
-	if (!isMonth())
+	if (!CheckIsMonth())
 	{
 		height = height
 			- $('div.buttonDiv').outerHeight(true);
@@ -273,7 +273,7 @@ function SetTableHeightForTime() {
 	}
 }
 
-function isMonth() {
+function CheckIsMonth() {
 	return $('button.resetButton').length <= 0;
 }
 
@@ -284,21 +284,21 @@ function GetCurrentDayId() {
 /** функции подсчета времени *
  * @return {string}
  */
-function SumOfTime(time1, time2)
-{
+function TCH_SumOfTime(time1, time2)
+{	
 	if (time1.toString().indexOf("-") > -1 && time2.toString().indexOf("-") > -1)
 	{
-		return "-" + SumOfTime(time1.substr(1), time2.substr(1));
+		return "-" + TCH_SumOfTime(time1.substr(1), time2.substr(1));
 	}
 
 	if (time1.toString().indexOf("-") > -1)
 	{
-		return DifferenceOfTime(time2, time1.substr(1));
+		return TCH_DifferenceOfTime(time2, time1.substr(1));
 	}
 
 	if (time2.toString().indexOf("-") > -1)
 	{
-		return DifferenceOfTime(time1, time2.substr(1));
+		return TCH_DifferenceOfTime(time1, time2.substr(1));
 	}
 
 	// дальше считается для неотрицательных значений
@@ -310,13 +310,13 @@ function SumOfTime(time1, time2)
 	var minutes2 = +time2.substr(position2 + 1);
 	var sumHours = +(hours1 + hours2) + Math.floor((minutes1 + minutes2)/60);
 	var sumMinutes = +(minutes1 + minutes2) % 60;
-	return Pad(sumHours,2) + ":" + Pad(sumMinutes,2);
+	return TCH_Pad(sumHours,2) + ":" + TCH_Pad(sumMinutes,2);
 }
 
 /**
  * @return {string}
  */
-function Pad(num, size)
+function TCH_Pad(num, size)
 {
     var s = num+"";
     while (s.length < size) s = "0" + s;
@@ -326,21 +326,21 @@ function Pad(num, size)
 /**
  * @return {string}
  */
-function DifferenceOfTime(time1, time2)
+function TCH_DifferenceOfTime(time1, time2)
 {
 	if (time1.toString().indexOf("-") > -1 && time2.toString().indexOf("-") > -1)
 	{
-		return DifferenceOfTime(time2.substr(1), time1.substr(1));
+		return TCH_DifferenceOfTime(time2.substr(1), time1.substr(1));
 	}
 
 	if (time1.toString().indexOf("-") > -1)
 	{
-		return "-" + SumOfTime(time1.substr(1), time2);
+		return "-" + TCH_SumOfTime(time1.substr(1), time2);
 	}
 
 	if (time2.toString().indexOf("-") > -1)
 	{
-		return SumOfTime(time1, time2.substr(1));
+		return TCH_SumOfTime(time1, time2.substr(1));
 	}
 
 	// дальше считается для неотрицательных значений
@@ -396,7 +396,7 @@ function DifferenceOfTime(time1, time2)
 			}
 		}
 	}
-	return Pad(differenceHours, 2) + ":" + Pad(differenceMinutes, 2);
+	return TCH_Pad(differenceHours, 2) + ":" + TCH_Pad(differenceMinutes, 2);
 }
 /*******************************/
 
@@ -853,8 +853,28 @@ function CreateHeaderRow(dayId, prefix) {
 		colspan: 2
 	}).append('Task');
 
+	var divTitleTime = $('<div></div>')
+	.append('Spent time <br>(hh:mm)');
+	
+	var iconToProperView = $('<i class="material-icons">done_all</i>');
+
+	var buttonId = prefix + dayId + '_' + 'buttonToProperView';
+	
+	var buttonToProperView = $('<button></button>', {
+		'class': 'mdl-button mdl-js-button mdl-button--icon mdl-js-ripple-effect buttonToProperView',
+		idtype: 'buttonToProperView',
+		id: buttonId
+	})
+	.append(iconToProperView);
+	
+	var tooltip = $('<div class="mdl-tooltip" for="' + buttonId + '">Округлить время</div>');	
+	
 	var tdTime = $('<td></td>', {
-	}).append('Spent time <br>(hh:mm)');
+	})
+	.css({
+		display: 'flex'
+	})
+	.append(divTitleTime, tooltip, buttonToProperView);
 
 	var tdComment = $('<td></td>', {
 		colspan: 2
@@ -868,6 +888,8 @@ function CreateHeaderRow(dayId, prefix) {
 		'class': 'time'
 	}).append('Delete<br>task');
 
+	componentHandler.upgradeElement(buttonToProperView.get(0));
+	
 	return $('<tr></tr>', {
 		'class': 'header',
 		idtype: 'header',
@@ -929,26 +951,28 @@ function GetTimeForOtherLabel(dayId) {
 	var reportTime = $('#' + dayId).find('td.time').last().find('span.usualTime').text();
 
 	var inputs = $('[idtype=inputTime][id^="' + prefix + dayId + '_"]').toArray();
+	var regExp = /^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$/;
+	
 	var times = inputs.map(
 		function(input) {
-			if ($(input).val())
-				return $(input).val();
-			else
-				return '';
+			var time = $(input).val();
+			if (!regExp.test(time)) {
+				time = ToTime(time);
+				if (!regExp.test(time)) {
+					time = '00:00';
+				}
+			}
+			
+			return time;
 		}
 	);
-
-	var regExp = /^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$/;
+	
 
 	var result = times.reduce(function(sum, current) {
-		if (regExp.test(current)) {
-			return SumOfTime(sum, current);
-		} else {
-			return sum;
-		}
+		return TCH_SumOfTime(sum, current);
 	}, '00:00');
 
-	return DifferenceOfTime(reportTime, result);
+	return ToDecimal(TCH_DifferenceOfTime(reportTime, result));
 }
 
 function CheckRowsNumber(lastRowIndex, dayId) {
@@ -971,8 +995,8 @@ function CheckRowsNumber(lastRowIndex, dayId) {
 			if (!CheckIfAnyInputHasVal(dayId, prefix, i)) {
 				ClearLocalStorageInputValueForRow(currentRow);
 				localStorage.removeItem(prefix + dayId + '_' + i);
+				
 				$('[dayid=' + dayId + '][taskindex=' + i + ']').remove();
-
 			}
 		}
 	}
@@ -1142,6 +1166,78 @@ function ShiftSubtask(taskIndex, dayId, prefix) {
 	currentRow.remove();
 }
 
+function ToDecimal(time) {
+	var regExp = /^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$/;
+	
+	if (!(regExp.test(time) || regExp.test(time.substr(1))))
+	{
+		return 0;
+	}
+	
+	var position = +time.indexOf(":");
+	var hours = +time.substr(0, position);
+	var minutes = +time.substr(position + 1);
+	var decimaMinutes = +(+ minutes/60).toFixed(2);
+	var decimalTime = +hours + decimaMinutes;	
+	
+	return decimalTime;
+}
+
+function ToTime(decimal) {
+	var position1 = +decimal.indexOf(".");
+	var position2 = +decimal.indexOf(",");
+	if (position1 < 0 && position2 < 0) {
+		if (Number.isInteger(+decimal)) {
+			return TCH_Pad(decimal, 2) + ':00';
+		} else {
+			return '00:00';
+		}			
+	}
+	
+	var position = position1 >= 0 ? position1 : position2;
+	var hours = +decimal.substr(0, position);
+	var minutes = +decimal.substr(position + 1, 2);
+	if (!(Number.isInteger(+hours) && Number.isInteger(+minutes) && minutes >= 0))
+	{
+		return '00:00';
+	}
+	var realMinutes = +(+minutes*60/100).toFixed();
+	var realTime = TCH_Pad(hours, 2) + ':' + TCH_Pad(realMinutes, 2);
+	
+	return realTime;	
+}
+
+function RoundTimeForDay(dayId) {
+	var prefix = GetCurrentMonthAndYearPrefix();
+	var inputs = $('[idtype=inputTime][id^="' + prefix + dayId + '_"]').toArray();
+	
+	var regExp = /^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$/;
+	
+	var times = inputs.map(
+		function(input) {
+			var time = $(input).val();
+			if (regExp.test(time)) {
+				time = ToDecimal(time);
+			}
+			
+			return time;
+		}
+	);
+	
+	for (var i = 0; i < inputs.length; i++) {
+		if (!times[i])
+			continue;
+		var value = (Math.round(+times[i] * 4) / 4).toFixed(2);
+		if (value.substr(value.length - 2) == '00') {
+			value = (+value).toFixed();
+		}
+		
+		var input = inputs[i];		
+		$(input).val(value);
+		var id = $(input).attr('id');
+		localStorage[id] = value;
+	}
+}
 
 
 $(document).ready ( function() {
@@ -1169,8 +1265,12 @@ $(document).ready ( function() {
 	CreateCurrentDayButton();
 	var rowsIndex = SetUpInitialState();
 	SetTableHeightForTime();
+	
+	$('.mdl-tooltip').each(function() {
+		componentHandler.upgradeElement(this);	
+	})
 
-	$(document).on('propertychange input change keyup paste', '[idtype="inputTask"], [idtype="inputComment"], [idtype="inputTime"]',
+	$(document).on('input', '[idtype="inputTask"], [idtype="inputComment"], [idtype="inputTime"]',
 		function()
 		{
 			localStorage[$(this).attr('id')] = $(this).val();
@@ -1357,13 +1457,26 @@ $(document).ready ( function() {
 
 			var input = mainRow.find('[idtype=inputTime]');
 			var startTime = mainRow.find('[idtype=startTime]');
-			if (input.val()) {
-				input.val(SumOfTime(DifferenceOfTime(time, startTime.text()), input.val()));
-			} else {
-				input.val(DifferenceOfTime(time, startTime.text()));
+			
+			var regExp = /^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$/;
+			var currentTime = input.val();		
+			if (!regExp.test(currentTime)) {
+				currentTime = ToTime(currentTime);
+				if (!regExp.test(currentTime)) {
+					currentTime = '';
+				}
 			}
-
-			localStorage[input.attr('id')] = input.val();
+			
+			var workedTime;			
+			
+			if (currentTime) {
+				workedTime = TCH_SumOfTime(TCH_DifferenceOfTime(time, startTime.text()), currentTime);
+			} else {
+				workedTime = TCH_DifferenceOfTime(time, startTime.text());
+			}
+			workedTime = ToDecimal(workedTime);
+			input.val(workedTime);
+			localStorage[input.attr('id')] = workedTime;
 
 			$(this).hide();
 			var startId = '#' + $(this).attr('id').replace('Stop', 'Start');
@@ -1444,5 +1557,14 @@ $(document).ready ( function() {
 			$('.timesheetOpened').removeClass('timesheetOpened');
 		}
 	);
+	
+	document.querySelectorAll('[idtype="buttonToProperView"]').forEach(function(item) {
+		item.onclick = function(e) {
+			var currentRow = $(this).parent().parent();
+			var dayId = currentRow.attr('dayid');
+			RoundTimeForDay(dayId);
+			$('#' + prefix + dayId + '_other_labelTime').text(GetTimeForOtherLabel(dayId));
+		};
+	});
 
 });
