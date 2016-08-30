@@ -1,0 +1,44 @@
+﻿/*tr.trTimeChecker td, tr.other td{
+	background-color: rgba(96, 125, 139, 0.05);
+}
+
+tr.trTimeChecker:hover td, tr.other:hover td{
+	background-color: rgba(96, 125, 139, 0.05) !important;
+}*/
+
+tr.trTimeChecker td {
+    vertical-align: middle;
+}
+
+.mdl-layout__tab.is-active , .mdl-layout__tab {
+	color: black !important;
+}
+
+tr[id]:not(.future):not(.trTimeChecker):not(.other) {
+	cursor: pointer;
+}
+
+tr input {
+	cursor: text !important;
+}
+
+
+/*tr.trTimeChecker td, tr.trTimeChecker:hover td, tr.other td, tr.other:hover td  {
+    background-color: #fff7ec !important;
+}*/
+
+tr.trTimeChecker.inProgress td.subtaskTd {
+    background-color: rgba(255, 171, 64, 0.4) !important;
+}
+
+tr.trTimeChecker.inProgress:hover td.subtaskTd {
+    background-color: rgba(255, 171, 64, 0.4) !important;
+}
+
+tr.timesheetOpened td, tr.timesheetOpened:hover td{
+    background-color: rgba(96, 125, 139, 0.33) !important;
+}
+
+div.barrier {
+    height: 1px;
+}

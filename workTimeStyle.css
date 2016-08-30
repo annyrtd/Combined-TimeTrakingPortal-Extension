@@ -1,0 +1,188 @@
+﻿table.full-size td
+{	
+	padding: 8px 16px !important;
+}
+
+table.full-size th
+
+{	
+	padding: 8px 16px !important;
+	background-color: #DDDDDD   !important;
+	font-weight: normal !important;
+	font-size: 14px !important;
+	
+}
+
+
+table.full-size 
+{
+	margin-top: 16px !important;
+}
+
+.time
+{	
+    text-align: center !important;
+}
+
+.range
+{	
+    text-align: center !important;
+}
+
+.conclusion
+{
+	width: 300px;
+	height: 160px; 
+	padding: 16px;	
+	margin: 16px;
+	margin-top: 16px !important;
+	margin-bottom: 0px !important;
+	display: block !important;
+	min-height: 0px !important;
+}
+
+.flexParent
+{
+	display: flex;
+	flex-flow: row wrap;
+	width: calc(100% - 240px);
+}
+
+.is-small-screen .flexParent
+{
+	width: 100%;
+}
+
+.barrier
+{
+	clear: both;
+	height: 20px;
+	width: 100%;
+}
+
+.intervalRow
+{
+	height: 20px;
+    background-color: rgb(240, 240, 240);	
+}
+
+.intervalRow:hover
+{
+	cursor: pointer;
+}
+
+.intervalCell
+{
+	font-size: 7pt;
+	text-align: center left;
+}
+
+.enoughWorkTime
+{
+	color: #8bc349;
+	font-weight: bold;
+}
+
+.notEnoughWorkTime
+{
+	color: #CC0000;	
+	font-weight: bold;
+}
+
+.weekday
+{	
+	font-weight: bold;
+	text-align: justify !important;
+}
+
+span.remote
+{
+	border-bottom: 0px solid blue !important;
+	color: blue;
+}
+
+table.full-size tbody, table.full-size thead 
+{ 
+	display: block; 
+	background-color: white;
+}
+
+table.full-size th 
+{  
+	background-color: white !important;
+}
+
+table.full-size th { 
+    height: 30px;
+    line-height: 30px;
+}
+
+table.full-size tbody {
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+td.weekday, th.weekday
+{
+	width: 150px !important;
+}
+
+td.monthday.number, th.monthday.number
+{
+	width: 90px !important;
+}
+
+th.range.text, td.range.text
+{
+	width: 120px !important;
+}
+
+td.time, th.time
+{
+	width: 85px !important;
+}
+
+
+td.text.note, th.text.note
+{
+	width: 80px !important;
+    
+}
+
+td.dayoff
+{
+	width: 615px !important;
+}
+
+.mdl-layout__content .buttonDiv
+{
+	padding-left: 16px;
+}
+
+#timeChangeToDecimalButton
+{
+	margin: 0px 5px;
+}
+
+.conclusion 
+{
+	overflow: visible;
+}
+
+.conclusion *
+{
+	outline: none;
+}
+
+.lunchTimeSpan
+{
+	font-size: 10px;
+	font-weight: 500;
+}
+
+.timeStatisticsSpan
+{
+	min-width: 248px;
+	width: 248px important;
+	display: block;
+}

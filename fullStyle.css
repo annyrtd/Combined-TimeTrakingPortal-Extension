@@ -1,0 +1,631 @@
+﻿/*
+rgb(63, 81, 181) - indigo
+rgb(255, 64, 129) - pink
+
+rgb(96,125,139) - blue gray
+rgb(255,171,64) - orange
+*/
+
+
+.blink  {
+	position: absolute !important; 
+	top: -5000 !important; 
+	left: -5000 !important;
+	display: none !important;
+}
+
+*:not(i)
+{
+	font-family: Roboto, sans-serif !important;
+}
+
+table.full-size  {    		
+	width: auto !important;
+}
+
+table.full-size td.text
+{
+	white-space: pre-line;
+}
+
+table.full-size td.text.phone
+{
+	white-space: nowrap;
+}
+
+table.full-size tr
+{
+	border-top-width: 0px !important;
+}
+
+body
+{
+	background-color: white !important;
+	color: rgb(38, 47, 74) !important;
+}
+
+.navbar
+{
+	min-height: 370px !important;	
+	border: 0px solid white !important;	
+	background-color: #C1AEC1    !important;
+	text-align: left !important;
+}
+
+.navbar a
+{
+	color: rgb(38, 47, 74) !important;	
+}
+
+.navbar li:hover a
+{		
+	color: white !important;
+}
+
+
+.content-medium
+{
+	min-width: 800px !important;	
+}
+
+
+.current 
+{
+    border: 0px solid rgb(20, 139, 238) !important;
+}
+
+tr 
+{
+    border-top: 1px solid #cacaca !important;
+    border-bottom: 1px solid #cacaca !important;
+}
+
+tbody tr:hover td 
+{
+	background-color: white !important;
+}
+
+tbody tr.dayoff:hover td
+{
+	background-color: #FFDEAD !important;
+}
+.dayoff
+{
+	background-color: #FFDEAD !important;
+}
+
+.intervalRow:hover td
+{
+	background-color: #CACACA !important;
+}
+
+input[type=submit], input[type=button]
+{
+	margin-bottom: 2px;
+    margin-left: 0px;
+    margin-right: 0px;
+    margin-top: 2px;
+    padding-bottom: 0px !important;
+    padding-left: 10px !important;
+    padding-right: 10px !important;
+    padding-top: 0px !important;		
+	border: solid 0px #781078;
+	
+}
+
+.navbar input[type=submit]
+{
+	width: 100% !important;
+	padding: 0px 5px! important;
+    font-weight: normal !important;
+	border : solid 0px #781078;
+}
+
+input[type=submit]:hover, input[type=button]:hover, .navbar input[type=submit]:hover
+{
+	cursor: pointer;
+}
+
+input[type="text"], select
+{
+    background-color: initial !important;
+    margin: initial !important;
+    padding: initial !important;
+}
+
+input[type=text]:hover, select
+{
+	cursor: pointer;
+}
+
+.inputReplaceButton
+{
+	width: 113px !important;
+	padding: 0px 10px !important;
+	font-size: 8pt !important;
+}
+
+.resetButton
+{
+	font-size: 7pt !important;
+	text-align: center !important;
+	margin: 0 auto;		
+	width: 140px !important;
+	line-height: 20px !important;
+	outline: none;
+	padding: 0px 5px !important;
+}
+
+#idReset
+{
+	outline: none;
+}
+
+.resetFilters
+{
+	position: fixed !important;
+	top: 90px !important;
+	right: 30px !important;
+	padding: 0px !important;
+	font-size: 8pt !important;
+}
+
+.resetButton:hover
+{
+	cursor: pointer;
+}
+
+.buttonDiv
+{
+	width: 130px;
+}
+
+
+.status-left, .status-right
+{
+	width: 100% !important;
+	font-size: 12px !important;
+	font-weight: bold;
+	text-align": right;
+}
+
+.status-right a
+{
+	font-size: 12px !important;
+}
+
+.status-center
+{
+	width: 100% !important;
+	background-color: #C1AEC1;
+	padding: 5px 0px;
+	margin: 0px !important;
+	
+}
+
+.main
+{
+	margin-left: auto !important;
+    margin-right: auto !important;
+	padding: 10px 70px 50px!important;
+}
+
+.status-bar
+{
+	min-width: 816px !important;	
+	border: 0px solid white !important;	
+	margin: 0px 0px 3px 10px !important;
+	background-color: transparent   !important;
+	padding: 15px 0px 0px 0px !important;
+}
+
+
+div.status-right:hover a
+{
+	cursor: default;
+}
+
+#settings label, #settings select
+{
+	font-size: 9pt;
+	text-align: left;
+}
+
+#scrollTableBlock
+{
+	position: fixed;
+	top: 0;
+	right: 0;
+	width: 80%;
+	height: 100px;
+	background-color: white;
+}
+
+.mdl-layout__header-row
+{
+	height: 56px !important;
+}
+
+#menu
+{
+	display: flex;
+	width: 1203px;
+	padding-left: 0px;
+	margin: 24px 0px;
+}
+
+#menu a, li 
+{
+	font-family: Roboto, sans-serif !important;
+}
+
+#menu  a, li
+{
+	color: #6B6B6B;
+	text-decoration: none;
+	
+}
+
+#menu > li
+{
+	width: 120px;
+	list-style-type: none;
+	margin: 0px 16px;
+	text-align: center;	
+	height: 50px;
+	border: 0px solid white !important;
+	
+}
+
+#menu > li > a
+{
+	color: white;
+	opacity: 0.7;
+	font-size: 14px;
+	padding: 10px 0px;
+	
+}
+
+#menu > li:hover > a
+{
+	opacity: 1;
+}
+
+#menu > li.current
+{
+	background-color: transparent !important;
+}
+
+#menu > li.current > a
+{
+	background-color: transparent !important;
+	border-bottom: 3px solid rgb(255,171,64) !important;	
+	color: rgb(255,171,64) !important;
+	opacity: 1;
+	
+}
+
+
+#menu > li > ul > li
+{
+	background-color: white;
+}
+
+.nav > li 
+{
+	display: inline-block;
+	cursor: pointer;
+}
+
+
+
+.nav > li > a
+{
+	width: 120px;
+	height: 30px;
+	display: table-cell;
+	vertical-align: middle;
+	text-align: center;
+}
+
+
+.drop 
+{
+	position: relative;
+}
+
+.drop > ul 
+{
+	width: 120px;
+	padding: 0px;
+	position: absolute;
+	left: 0px;
+	top: 50px;
+	-webkit-transition: all 0.3s ease;
+	-ms-transition: all 0.3s ease;
+    -moz-transition: all 0.3s ease;
+    -o-transition: all 0.3s ease;
+	transition: all 0.3s ease;
+	
+	-moz-transform: scale(0); /* Для Firefox */
+    -ms-transform: scale(0); /* Для IE */
+    -webkit-transform: scale(0); /* Для Safari, Chrome, iOS */
+    -o-transform: scale(0); /* Для Opera */
+	transform: scale(0);
+	
+	-webkit-transform-origin: 0 0;
+    -moz-transform-origin: 0 0;
+    -o-transform-origin: 0 0;
+    -ms-transform-origin: 0 0;
+	transform-origin: 0 0;
+	
+	box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.16), 0 2px 8px 0 rgba(0, 0, 0, 0.12);
+}
+
+.drop > ul > li 
+{
+	display: block;
+	width: 120px;
+	height: 50px;
+	position: relative;
+	left: 0px;
+	top: 0px;
+}
+
+.drop > ul > li > a 
+{
+	width: 120px;
+	height: 30px;
+	padding: 0px;
+	display: table-cell;	
+	text-align: center;
+	vertical-align: middle;
+	padding: 10px 0px;
+	font-size: 14px;
+}
+
+.drop > ul > li > a:hover 
+{
+	background: #EBEBEB;
+}			
+
+.drop:hover >ul 
+{
+	-moz-transform: scale(1); /* Для Firefox */
+    -ms-transform: scale(1); /* Для IE */
+    -webkit-transform: scale(1); /* Для Safari, Chrome, iOS */
+    -o-transform: scale(1); /* Для Opera */
+	transform: scale(1);
+}
+
+.main form
+{
+	width: auto;
+	display: block;
+	margin: auto;
+}
+
+
+
+/*--------------------*/
+
+.mdl-layout__container 
+{
+	min-width: 560px;
+	z-index: 999;
+}
+
+.mdl-layout__header 
+{
+	height: 130px;
+}
+
+.mdl-layout__drawer 
+{
+	padding: 30px; 
+	padding-right: 20px;
+}
+
+.mdl-layout-title 
+{
+    padding-left: 0px !important;
+}
+
+
+.accentColor
+{
+	color: rgb(255,171,64);
+}
+
+.greenColor
+{
+	color: #8bc349;
+}
+
+.status-center
+{
+	background-color: white !important;
+	font-family: Roboto, Helvetica, Arial, sans-serif !important;
+	color: black !important;
+	font-size: 13pt !important;
+	padding-top: 20px !important;
+}
+
+
+div.is-small-header header.mdl-layout__header
+{
+	height: 180px !important;
+}
+
+div.is-small-header ul#menu
+{
+	margin-top: 74px !important; 
+}
+
+div.is-small-header span.mdl-layout-title.notfixed
+{
+	padding-top: 15px !important;
+}
+
+div.is-small-header span.mdl-layout-title.notfixed
+{
+    padding-right: 400px !important;
+}
+
+
+
+.mdl-card > .mdl-card__title, .mdl-card > .mdl-card__supporting-text
+{
+	color: #000000;	
+	width: calc(100% - 32px);
+}
+
+.mdl-card
+{
+	margin-top: 10px !important;
+	margin-bottom: 10px !important;
+}
+
+.mdl-card table.full-size
+{
+	position: relative !important;
+}
+
+
+.content-wide
+{
+	height: calc(100% - 140px);
+}
+
+
+form.nav2 input
+{
+	text-align: left !important;
+}
+
+input[type="text"]:focus, select:focus
+{	
+	color: black !important;
+}
+
+input[type="text"]
+{	
+	height: 22px;
+}
+
+.mdl-textfield__label
+{	
+	color: gray !important;
+    font-size: 12pt !important;
+	line-height: 12pt !important;
+}
+
+header, div.mdl-layout__drawer
+{
+	cursor: default;
+}
+
+div.mdl-switch__thumb, div.mdl-switch__track, span.mdl-switch__ripple-container
+{
+	cursor: pointer !important;
+}
+
+main.mdl-layout__content
+{
+	cursor: default;
+}
+
+table.full-size tr
+{
+	height: 40px;
+}
+
+div.holiday-box
+{
+	padding: 2px 16px !important;	
+	border: 0px solid black !important;
+	height: 22px !important;
+	background-color: white !important;
+	color: rgb(255,171,64) !important;
+}
+
+
+div.content-wide div.mdl-card__title
+{
+	padding-bottom: 5px !important;
+}
+
+.ui-datepicker
+{
+	z-index:1000 !important;	
+}
+
+select
+{
+	outline: none;
+	border: 1px solid rgb(202, 202, 202);
+	height: 32px !important;
+	line-height: 32px !important;	
+	font-weight: normal !important;
+}
+
+select *, select
+{
+	font-size: 14px !important;
+}
+
+.ui-icon.ui-icon-circle-triangle-w
+{
+	width: 0; 
+	height: 0; 
+	border-top: 8px solid transparent;
+	border-bottom: 8px solid transparent; 	
+	border-right:8px solid gray; 
+}
+
+.ui-icon.ui-icon-circle-triangle-e
+{
+	width: 0; 
+	height: 0; 
+	border-top: 8px solid transparent;
+	border-bottom: 8px solid transparent;	
+	border-left: 8px solid gray;
+}
+
+/*for mdl cards from table*/
+
+.mdl-layout__content .mdl-layout-title
+{
+	margin: 16px;
+	margin-top: 32px;
+}
+	
+	
+table.full-size
+{
+	margin: 16px; 
+	margin-top: 32px;
+}
+
+form[action='/Notes']
+{
+	margin: 16px; 
+}
+
+.noteSaveAndCancelCard
+{
+	margin: 16px; 
+	margin-top: 32px;
+	display: block !important;
+	width: 650px !important; 	
+}
+
+.mdl-button.mdl-button--raised.mdl-js-button.mdl-button--accent.mdl-js-ripple-effect
+{
+	color: white;
+}
+
+select 
+{
+	border-radius: 2px !important;
+}

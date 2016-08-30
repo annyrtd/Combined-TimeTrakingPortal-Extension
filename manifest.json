@@ -1,0 +1,54 @@
+﻿{
+	"manifest_version": 2,
+	"name": "Combined TimeTrackingPortal Extension",
+	"version": "1.0",
+	"icons": {
+		"128": "images/clock.png"
+	},
+	"background" : {
+		"scripts" : ["background.js"]
+	},
+	"content_scripts": [
+		{
+			"matches": [ "http://co-msk-app02/*", "https://co-msk-app02/*" ],
+			"exclude_matches":
+			[
+				"http://co-msk-app02/Preferences/Edit*",
+				"https://co-msk-app02/Preferences/Edit*"
+			],
+			"css": [ "screenOff.css", "fullStyle.css", "material.blue_grey-orange.min.css", "icon.css", "jquery-ui-1.10.4.custom.css" ],
+			"js": [ "jquery.js", "jquery-ui-1.10.4.custom.js", "fullScript.js", "material.min.js" ],
+			"run_at": "document_start"
+		},
+		{
+			"matches": [ "http://co-msk-app02/Personal*", "https://co-msk-app02/Personal*" ],
+			"js": [ "workTimeScript.js", "timeCheckerWorkTimeScript.js" ],
+			"css": [ "workTimeStyle.css", "timeCheckerWorkTimeStyle.css" ]
+		},
+		{
+			"matches": 
+			[ 
+				"http://co-msk-app02/", "https://co-msk-app02/", 
+				"http://co-msk-app02/?officeid*", "http://co-msk-app02/?order*", 
+				"https://co-msk-app02/?officeid*", "https://co-msk-app02/?order*" 
+			],
+			"js": [ "officeScript.js" ],
+			"css": [ "officeStyle.css" ]
+		}
+	],
+	
+	"permissions": [
+		"http://co-msk-app02/*",
+		"http://confirmitconnect.firmglobal.com/Search/Pages/PeopleResults.aspx*",
+		"http://morpher.ru/Demo.aspx*"
+	],
+	
+	"web_accessible_resources": [
+		"images/*"
+	],
+	
+	"browser_action": {
+		"default_icon": "images/clock.png",
+		"default_title": "Work Time"
+    }	
+}
