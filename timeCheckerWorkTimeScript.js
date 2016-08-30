@@ -50,14 +50,6 @@ function SetUpInitialState() {
 		}
 	);
 
-	$('.trTimeChecker, .other, .header').hide();
-
-	var currentDayId = GetCurrentDayId();
-
-	$('tr.intervalRow, tr[id]').hide();
-	$('#' + currentDayId).addClass('timesheetOpened');
-	$('#' + currentDayId + ', [dayid=' + currentDayId + ']').show();
-
 	return rowsIndex;
 }
 
@@ -849,32 +841,55 @@ function CreateTimeCheckerRow(dayId, prefix, taskIndex, subtaskIndex) {
 
 function CreateHeaderRow(dayId, prefix) {
 
+	var spanCreateTemplate = $('<span></span>')
+	.css({
+		paddingRight: '16px'
+	})
+	.append('Task');
+	
+	var iconCreateTemplate = $('<i class="material-icons">list</i>');
+
+	var buttonIdCreateTemplate = prefix + dayId + '_' + 'buttonCreateTemplate';
+	
+	var buttonCreateTemplate = $('<button></button>', {
+		'class': 'mdl-button mdl-js-button mdl-button--icon mdl-js-ripple-effect',
+		idtype: 'buttonCreateTemplate',
+		id: buttonIdCreateTemplate
+	})
+	.css({
+		marginBottom: '2px'
+	})
+	.append(iconCreateTemplate);
+	
+	var tooltipCreateTemplate = $('<div class="mdl-tooltip" for="' + buttonIdCreateTemplate + '">Создать шаблон</div>');	
+
+
 	var tdTask = $('<td></td>', {
 		colspan: 2
-	}).append('Task');
+	}).append(spanCreateTemplate, buttonCreateTemplate, tooltipCreateTemplate);
 
 	var divTitleTime = $('<div></div>')
 	.append('Spent time <br>(hh:mm)');
 	
 	var iconToProperView = $('<i class="material-icons">done_all</i>');
 
-	var buttonId = prefix + dayId + '_' + 'buttonToProperView';
+	var buttonIdToProperView = prefix + dayId + '_' + 'buttonToProperView';
 	
 	var buttonToProperView = $('<button></button>', {
-		'class': 'mdl-button mdl-js-button mdl-button--icon mdl-js-ripple-effect buttonToProperView',
+		'class': 'mdl-button mdl-js-button mdl-button--icon mdl-js-ripple-effect',
 		idtype: 'buttonToProperView',
-		id: buttonId
+		id: buttonIdToProperView
 	})
 	.append(iconToProperView);
 	
-	var tooltip = $('<div class="mdl-tooltip" for="' + buttonId + '">Округлить время</div>');	
+	var tooltipToProperView = $('<div class="mdl-tooltip" for="' + buttonIdToProperView + '">Округлить время</div>');	
 	
 	var tdTime = $('<td></td>', {
 	})
 	.css({
 		display: 'flex'
 	})
-	.append(divTitleTime, tooltip, buttonToProperView);
+	.append(divTitleTime, tooltipToProperView, buttonToProperView);
 
 	var tdComment = $('<td></td>', {
 		colspan: 2
@@ -889,6 +904,7 @@ function CreateHeaderRow(dayId, prefix) {
 	}).append('Delete<br>task');
 
 	componentHandler.upgradeElement(buttonToProperView.get(0));
+	componentHandler.upgradeElement(buttonCreateTemplate.get(0));
 	
 	return $('<tr></tr>', {
 		'class': 'header',
@@ -1262,8 +1278,19 @@ $(document).ready ( function() {
 		return;
 	}	
 	
-	CreateCurrentDayButton();
 	var rowsIndex = SetUpInitialState();
+	
+	$('.trTimeChecker, .other, .header').hide();
+
+	if(!prefix) {
+		CreateCurrentDayButton();
+		var currentDayId = GetCurrentDayId();
+		$('tr.intervalRow, tr[id], tr.dayoff').hide();
+		$('#' + currentDayId).addClass('timesheetOpened');
+		$('#' + currentDayId + ', [dayid=' + currentDayId + ']').show();
+	}
+	
+	
 	SetTableHeightForTime();
 	
 	$('.mdl-tooltip').each(function() {
@@ -1524,7 +1551,7 @@ $(document).ready ( function() {
 			if ($(this).hasClass('mdl-button--accent')) {
 				$(this).removeClass('mdl-button--raised mdl-button--accent');
 
-				$('tr.intervalRow, tr[id]').not('.future').not('.trTimeChecker').not('.other').not('.header').show();
+				$('tr.intervalRow, tr.dayoff, tr[id]').not('.future').not('.trTimeChecker').not('.other').not('.header').show();
 				$('.trTimeChecker').hide();
 				$('.other').hide();
 				$('.header').hide();
@@ -1536,7 +1563,7 @@ $(document).ready ( function() {
 				$(this).addClass('mdl-button--raised mdl-button--accent');
 				var dayId = GetCurrentDayId();
 
-				$('tr.intervalRow, tr[id]').hide();
+				$('tr.intervalRow, tr[id], tr.dayoff').hide();
 				$('#' + dayId + ', [dayid=' + dayId + ']').show();
 
 				$('tr[id]:not(.future):not(.trTimeChecker):not(.other):not(.header)').removeClass('timesheetOpened');
@@ -1564,6 +1591,15 @@ $(document).ready ( function() {
 			var dayId = currentRow.attr('dayid');
 			RoundTimeForDay(dayId);
 			$('#' + prefix + dayId + '_other_labelTime').text(GetTimeForOtherLabel(dayId));
+		};
+	});
+	
+	document.querySelectorAll('[idtype="buttonCreateTemplate"]').forEach(function(item) {
+		item.onclick = function(e) {
+			var currentRow = $(this).parent().parent();
+			var dayId = currentRow.attr('dayid');
+			
+			CreateTemplateMenu(dayId);
 		};
 	});
 
