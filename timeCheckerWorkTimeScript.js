@@ -964,7 +964,7 @@ function CreateOtherRow(dayId, prefix) {
  */
 function GetTimeForOtherLabel(dayId) {
 	var prefix = GetCurrentMonthAndYearPrefix();
-	var reportTime = $('#' + dayId).find('td.time').last().find('span.usualTime').text();
+	var reportTime = +$('#' + dayId).find('td.time').last().find('span.decimalTime').text();
 
 	var inputs = $('[idtype=inputTime][id^="' + prefix + dayId + '_"]').toArray();
 	var regExp = /^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$/;
@@ -972,10 +972,11 @@ function GetTimeForOtherLabel(dayId) {
 	var times = inputs.map(
 		function(input) {
 			var time = $(input).val();
-			if (!regExp.test(time)) {
-				time = ToTime(time);
-				if (!regExp.test(time)) {
-					time = '00:00';
+			if (regExp.test(time)) {
+				time = ToDecimal(time);
+			} else {
+				if (!isFloat(+time) && !isInt(+time)) {
+					time = 0;
 				}
 			}
 			
@@ -985,10 +986,18 @@ function GetTimeForOtherLabel(dayId) {
 	
 
 	var result = times.reduce(function(sum, current) {
-		return TCH_SumOfTime(sum, current);
-	}, '00:00');
+		return +sum + +current;
+	}, 0);
 
-	return ToDecimal(TCH_DifferenceOfTime(reportTime, result));
+	return ((reportTime - result).toFixed(2)*1).toString();
+}
+
+function isFloat(n){
+    return Number(n) === n && n % 1 !== 0;
+}
+
+function isInt(n){
+    return Number(n) === n && n % 1 === 0;
 }
 
 function CheckRowsNumber(lastRowIndex, dayId) {
@@ -1190,16 +1199,20 @@ function ToDecimal(time) {
 		return 0;
 	}
 	
-	var position = +time.indexOf(":");
-	var hours = +time.substr(0, position);
-	var minutes = +time.substr(position + 1);
-	var decimaMinutes = +(+ minutes/60).toFixed(2);
-	var decimalTime = +hours + decimaMinutes;	
+	var isNegative = (time.indexOf('-') == 0);
 	
-	return decimalTime;
+	var position = +time.indexOf(":");
+	var hours = isNegative ? +time.substr(1, position - 1) : +time.substr(0, position);
+	var minutes = +time.substr(position + 1);
+	var decimaMinutes = (+(+ minutes/60)).toFixed(2);
+	var stringMinutesPosition = decimaMinutes.indexOf('.')
+	var stringMinutes = decimaMinutes.substr(stringMinutesPosition + 1);
+	
+	return +((isNegative ? '-' : '') + hours + '.' + stringMinutes);
 }
 
 function ToTime(decimal) {
+	
 	var position1 = +decimal.indexOf(".");
 	var position2 = +decimal.indexOf(",");
 	if (position1 < 0 && position2 < 0) {
@@ -1209,6 +1222,8 @@ function ToTime(decimal) {
 			return '00:00';
 		}			
 	}
+	
+	decimal = (+decimal).toFixed(2);
 	
 	var position = position1 >= 0 ? position1 : position2;
 	var hours = +decimal.substr(0, position);
