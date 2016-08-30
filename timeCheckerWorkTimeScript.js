@@ -1256,6 +1256,17 @@ function RoundTimeForDay(dayId) {
 }
 
 
+function CreateTemplateMenu(dayId) {
+	/*<label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="checkbox-2">
+	  <input type="checkbox" id="checkbox-2" class="mdl-checkbox__input">
+	  <span class="mdl-checkbox__label">Checkbox</span>
+	</label>
+	
+	$('.trTimeChecker[dayid="' + dayId + '"]').each(function() {
+		
+	});*/
+}
+
 $(document).ready ( function() {
 	var prefix = GetCurrentMonthAndYearPrefix();
 	
