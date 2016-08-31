@@ -117,11 +117,25 @@ function SetUpDay(currentRow, prefix) {
 			tempMainRow = CreateTimeCheckerRow(dayId, prefix, i);
 			//tempMainRow = CreateEmptyTimeCheckingRow(i, dayId);
 
-			tempMainRow.find('[idtype="inputTask"], [idtype="inputComment"], [idtype="inputTime"]').each(function(){
+			tempMainRow.find('[idtype="inputTask"], [idtype="inputComment"]').each(function(){
 				var self = $(this);
 				var id = self.attr('id');
-				if (localStorage[id]) {
-					self.val(localStorage[id]);
+				var value = localStorage[id];
+				if (value) {
+					self.val(value);
+				}
+			});
+
+			tempMainRow.find('[idtype="inputTime"]').each(function(){
+				var self = $(this);
+				var id = self.attr('id');
+				var value = localStorage[id];
+				if (value) {
+					if(isFloat(+value) || isInt(+value)) {
+						value = ToTime(value);
+					}
+					localStorage[id] = value;
+					self.val(value);
 				}
 			});
 
@@ -140,11 +154,25 @@ function SetUpDay(currentRow, prefix) {
 					tempSubtaskRow = CreateTimeCheckerRow(dayId, prefix, i, j);
 					//tempSubtaskRow = CreateSubtaskRow(i, j, dayId);
 
-					tempSubtaskRow.find('[idtype="inputTask"], [idtype="inputComment"], [idtype="inputTime"]').each(function(){
+					tempSubtaskRow.find('[idtype="inputTask"], [idtype="inputComment"]').each(function(){
 						var self = $(this);
 						var id = self.attr('id');
-						if (localStorage[id]) {
-							self.val(localStorage[id]);
+						var value = localStorage[id];
+						if (value) {
+							self.val(value);
+						}
+					});
+
+					tempSubtaskRow.find('[idtype="inputTime"]').each(function(){
+						var self = $(this);
+						var id = self.attr('id');
+						var value = localStorage[id];
+						if (value) {
+							if(isFloat(+value) || isInt(+value)) {
+								value = ToTime(value);
+							}
+							localStorage[id] = value;
+							self.val(value);
 						}
 					});
 
@@ -873,26 +901,13 @@ function CreateHeaderRow(dayId, prefix) {
 
 	var divTitleTime = $('<div></div>')
 	.append('Spent time <br>(hh:mm)');
-	
-	var iconToProperView = $('<i class="material-icons">done_all</i>');
 
-	var buttonIdToProperView = prefix + dayId + '_' + 'buttonToProperView';
-	
-	var buttonToProperView = $('<button></button>', {
-		'class': 'mdl-button mdl-js-button mdl-button--icon mdl-js-ripple-effect',
-		idtype: 'buttonToProperView',
-		id: buttonIdToProperView
-	})
-	.append(iconToProperView);
-	
-	var tooltipToProperView = $('<div class="mdl-tooltip" for="' + buttonIdToProperView + '">Округлить время</div>');	
-	
 	var tdTime = $('<td></td>', {
 	})
 	.css({
 		display: 'flex'
 	})
-	.append(divTitleTime/*, tooltipToProperView, buttonToProperView*/);
+	.append(divTitleTime);
 
 	var tdComment = $('<td></td>', {
 		colspan: 2
@@ -906,7 +921,6 @@ function CreateHeaderRow(dayId, prefix) {
 		'class': 'time'
 	}).append('Delete<br>task');
 
-	componentHandler.upgradeElement(buttonToProperView.get(0));
 	componentHandler.upgradeElement(buttonCreateTemplate.get(0));
 	
 	return $('<tr></tr>', {
@@ -1667,7 +1681,7 @@ $(document).ready ( function() {
 			$('input[idtype=inputTime]').each(
 				function() {
 					var time = $(this).val();
-					if(time) {
+					if(time && !isInt(+time) && !isFloat(+time)) {
 						$(this).val(ToDecimal(time));
 					}
 				}
