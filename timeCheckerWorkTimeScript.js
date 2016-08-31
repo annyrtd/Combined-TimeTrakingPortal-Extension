@@ -423,286 +423,6 @@ function TCH_DifferenceOfTime(time1, time2)
 }
 /*******************************/
 
-/*
-function CreateEmptyTimeCheckingRow(taskIndex, dayId) {
-
-	var inputTask = $('<input />', {
-		type: 'text',
-		idtype: 'inputTask',
-		id: dayId + '_' + 'inputTask' + taskIndex
-	})
-	.css({
-		width: '220px'
-	});
-
-	var tdTask = $('<td></td>', {
-		colspan: 2
-	})
-	.append(inputTask);
-
-
-
-	var labelStartTime = $('<label></label>', {
-		idtype: 'startTime',
-		id: dayId + '_' + 'startTime' + taskIndex + '-0'
-	});
-
-	var tdStartTime = $('<td></td>', {
-		'class': 'subtaskTd'
-	})
-	.css({
-		display: 'none'
-	})
-	.append(labelStartTime);
-
-
-
-	var inputTime = $('<input />', {
-		type: 'text',
-		idtype: 'inputTime',
-		id: dayId + '_' + 'inputTime' + taskIndex + '-0'
-	})
-	.css({
-		width: '70px'
-	});
-
-	var iconTimeStart = $('<i class="material-icons">play_arrow</i>');
-
-	var buttonTimeStart = $('<button></button>', {
-		'class': 'mdl-button mdl-js-button mdl-button--icon mdl-js-ripple-effect',
-		idtype: 'buttonTimeStart',
-		id: dayId + '_' + 'buttonTimeStart' + taskIndex + '-0'
-	})
-	.append(iconTimeStart);
-
-	var iconTimeStop = $('<i class="material-icons">stop</i>');
-
-	var buttonTimeStop = $('<button></button>', {
-		'class': 'mdl-button mdl-js-button mdl-button--icon mdl-js-ripple-effect',
-		idtype: 'buttonTimeStop',
-		id: dayId + '_' + 'buttonTimeStop' + taskIndex + '-0'
-	})
-	.css({
-		display: 'none'
-	})
-	.append(iconTimeStop);
-
-
-	var tdTime = $('<td></td>', {
-		'class': 'subtaskTd'
-	})
-	.css({
-		textAlign: 'center'
-	})
-	.append(inputTime);
-
-	if (dayId == GetCurrentDayId()) {
-		tdTime.append(buttonTimeStart, buttonTimeStop);
-	}
-
-
-
-	var inputComment = $('<input />', {
-		type: 'text',
-		idtype: 'inputComment',
-		id: dayId + '_' + 'inputComment' + taskIndex + '-0'
-	})
-	.css({
-		width: '180px'
-	});
-
-	var iconAddSubtask = $('<i class="material-icons" >add</i>');
-
-	var buttonAddSubtask = $('<button></button>', {
-		'class': 'mdl-button mdl-js-button mdl-button--icon mdl-js-ripple-effect mdl-button--accent',
-		idtype: 'buttonAddSubtask',
-		id: dayId + '_' + 'buttonAddSubtask' + taskIndex + '-0'
-	})
-	.append(iconAddSubtask);
-
-	var tdComment = $('<td></td>', {
-		colspan: 2,
-		'class': 'time subtaskTd'
-	})
-	.append(inputComment, buttonAddSubtask);
-
-
-
-	var iconCloseSubtask = $('<i class="material-icons" >close</i>');
-
-	var buttonCloseSubtask = $('<button></button>', {
-		'class': 'mdl-button mdl-js-button mdl-button--icon mdl-js-ripple-effect',
-		idtype: 'buttonCloseSubtask',
-		id: dayId + '_' + 'buttonCloseSubtask' + taskIndex + '-0'
-	})
-	.append(iconCloseSubtask);
-
-	var tdCloseSubtask = $('<td></td>', {
-		'class': 'time subtaskTd'
-	})
-	.append(buttonCloseSubtask);
-
-
-
-	var iconDeleteTask = $('<i class="material-icons" >delete</i>');
-
-	var buttonDeleteTask = $('<button></button>', {
-		'class': 'mdl-button mdl-js-button mdl-button--icon mdl-js-ripple-effect',
-		idtype: 'buttonDeleteTask',
-		id: dayId + '_' + 'buttonDeleteTask' + taskIndex
-	})
-	.append(iconDeleteTask);
-
-	var tdDeleteTask = $('<td></td>', {
-	})
-	.append(buttonDeleteTask);
-
-
-
-	var subtaskCount = 1;
-
-	var tr = $('<tr></tr>', {
-		'class': 'trTimeChecker task',
-		idtype: 'trTimeChecker',
-		dayid: dayId,
-		subtaskcount: subtaskCount,
-		taskindex: taskIndex,
-		id: dayId + '_' + 'trTimeChecker' + taskIndex
-	})
-	.append(tdTask, tdStartTime, tdTime, tdComment, tdCloseSubtask, tdDeleteTask);
-
-	componentHandler.upgradeElement(buttonTimeStart.get(0));
-	componentHandler.upgradeElement(buttonCloseSubtask.get(0));
-	componentHandler.upgradeElement(buttonAddSubtask.get(0));
-	componentHandler.upgradeElement(buttonDeleteTask.get(0));
-
-	return tr;
-}
-*/
- /*
-function CreateSubtaskRow(taskIndex, subtaskIndex, dayId) {
-	var labelStartTime = $('<label></label>', {
-		idtype: 'startTime',
-		id: dayId + '_' + 'startTime' + taskIndex + '-' + subtaskIndex
-	});
-
-	var tdStartTime = $('<td></td>', {
-		'class': 'subtaskTd'
-	})
-	.css({
-		display: 'none'
-	})
-	.append(labelStartTime);
-
-
-
-	var inputTime = $('<input />', {
-		type: 'text',
-		idtype: 'inputTime',
-		id: dayId + '_' + 'inputTime' + taskIndex + '-' + subtaskIndex
-	})
-	.css({
-		width: '70px'
-	});
-
-	var iconTimeStart = $('<i class="material-icons">play_arrow</i>');
-
-	var buttonTimeStart = $('<button></button>', {
-		'class': 'mdl-button mdl-js-button mdl-button--icon mdl-js-ripple-effect',
-		idtype: 'buttonTimeStart',
-		id: dayId + '_' + 'buttonTimeStart' + taskIndex + '-' + subtaskIndex
-	})
-	.append(iconTimeStart);
-
-	var iconTimeStop = $('<i class="material-icons">stop</i>');
-
-	var buttonTimeStop = $('<button></button>', {
-		'class': 'mdl-button mdl-js-button mdl-button--icon mdl-js-ripple-effect',
-		idtype: 'buttonTimeStop',
-		id: dayId + '_' + 'buttonTimeStop' + taskIndex + '-0'
-	})
-	.css({
-		display: 'none'
-	})
-	.append(iconTimeStop);
-
-	var tdTime = $('<td></td>', {
-		'class': 'subtaskTd'
-	})
-	.css({
-		textAlign: 'center'
-	})
-	.append(inputTime);
-
-	if (dayId == GetCurrentDayId()) {
-		tdTime.append(buttonTimeStart, buttonTimeStop);
-	}
-
-
-
-	var inputComment = $('<input />', {
-		type: 'text',
-		idtype: 'inputComment',
-		id: dayId + '_' + 'inputComment' + taskIndex + '-' + subtaskIndex
-	})
-	.css({
-		width: '180px'
-	});
-
-	var iconAddSubtask = $('<i class="material-icons" >add</i>');
-
-	var buttonAddSubtask = $('<button></button>', {
-		'class': 'mdl-button mdl-js-button mdl-button--icon mdl-js-ripple-effect mdl-button--accent',
-		idtype: 'buttonAddSubtask',
-		id: dayId + '_' + 'buttonAddSubtask' + taskIndex + '-' + subtaskIndex
-	})
-	.append(iconAddSubtask);
-
-	var tdComment = $('<td></td>', {
-		colspan: 2,
-		'class': 'time subtaskTd'
-	})
-	.append(inputComment, buttonAddSubtask);
-
-
-
-	var iconCloseSubtask = $('<i class="material-icons" >close</i>');
-
-	var buttonCloseSubtask = $('<button></button>', {
-		'class': 'mdl-button mdl-js-button mdl-button--icon mdl-js-ripple-effect',
-		idtype: 'buttonCloseSubtask',
-		id: dayId + '_' + 'buttonCloseSubtask' + taskIndex + '-' + subtaskIndex
-	})
-	.append(iconCloseSubtask);
-
-	var tdCloseSubtask = $('<td></td>', {
-		'class': 'time subtaskTd'
-	})
-	.append(buttonCloseSubtask);
-
-
-
-	var tr = $('<tr></tr>', {
-		'class': 'trTimeChecker subtask',
-		idtype: 'trTimeChecker',
-		dayid: dayId,
-		taskindex: taskIndex,
-		subtaskIndex: subtaskIndex,
-		id: dayId + '_' + 'trTimeChecker' + taskIndex + '-' + subtaskIndex
-	})
-	.append(tdStartTime, tdTime, tdComment, tdCloseSubtask);
-
-
-
-	componentHandler.upgradeElement(buttonTimeStart.get(0));
-	componentHandler.upgradeElement(buttonCloseSubtask.get(0));
-	componentHandler.upgradeElement(buttonAddSubtask.get(0));
-
-	return tr;
-}
-
-*/
-
 function CreateTimeCheckerRow(dayId, prefix, taskIndex, subtaskIndex) {
 
 	var subtaskIndex = subtaskIndex ? subtaskIndex : 0;
@@ -879,9 +599,7 @@ function CreateHeaderRow(dayId, prefix) {
 	.append('Task');
 	
 	var iconCreateTemplate = $('<i class="material-icons">list</i>');
-
-	var buttonIdCreateTemplate = prefix + dayId + '_' + 'buttonCreateTemplate';
-	
+	var buttonIdCreateTemplate = prefix + dayId + '_' + 'buttonCreateTemplate';	
 	var buttonCreateTemplate = $('<button></button>', {
 		'class': 'mdl-button mdl-js-button mdl-button--icon mdl-js-ripple-effect',
 		idtype: 'buttonCreateTemplate',
@@ -890,14 +608,46 @@ function CreateHeaderRow(dayId, prefix) {
 	.css({
 		marginBottom: '2px'
 	})
-	.append(iconCreateTemplate);
+	.append(iconCreateTemplate);	
 	
 	var tooltipCreateTemplate = $('<div class="mdl-tooltip" for="' + buttonIdCreateTemplate + '">Создать шаблон</div>');	
+	
+	var iconSaveTemplate = $('<i class="material-icons">save</i>');
+	var buttonIdSaveTemplate = prefix + dayId + '_' + 'buttonSaveTemplate';	
+	var buttonSaveTemplate = $('<button></button>', {
+		'class': 'mdl-button mdl-js-button mdl-button--icon mdl-js-ripple-effect',
+		idtype: 'buttonSaveTemplate',
+		id: buttonIdSaveTemplate
+	})
+	.css({
+		marginBottom: '2px',
+		display: 'none'
+	})
+	.append(iconSaveTemplate);	
+	
+	var tooltipSaveTemplate = $('<div class="mdl-tooltip" for="' + buttonIdSaveTemplate + '">Сохранить выбранные</div>');	
+	
+	var iconUploadTemplate = $('<i class="material-icons">file_upload</i>');
+	var buttonIdUploadTemplate = prefix + dayId + '_' + 'buttonUploadTemplate';	
+	var buttonUploadTemplate = $('<button></button>', {
+		'class': 'mdl-button mdl-js-button mdl-button--icon mdl-js-ripple-effect',
+		idtype: 'buttonUploadTemplate',
+		id: buttonIdUploadTemplate
+	})
+	.css({
+		marginBottom: '2px'
+	})
+	.append(iconUploadTemplate);	
+	
+	var tooltipUploadTemplate = $('<div class="mdl-tooltip" for="' + buttonIdUploadTemplate + '">Загрузить шаблон</div>');	
 
 
 	var tdTask = $('<td></td>', {
 		colspan: 2
-	}).append(spanCreateTemplate, buttonCreateTemplate, tooltipCreateTemplate);
+	}).append(spanCreateTemplate)
+	.append(buttonCreateTemplate, tooltipCreateTemplate)
+	.append(buttonSaveTemplate, tooltipSaveTemplate)
+	.append(buttonUploadTemplate, tooltipUploadTemplate);
 
 	var divTitleTime = $('<div></div>')
 	.append('Spent time <br>(hh:mm)');
@@ -922,6 +672,8 @@ function CreateHeaderRow(dayId, prefix) {
 	}).append('Delete<br>task');
 
 	componentHandler.upgradeElement(buttonCreateTemplate.get(0));
+	componentHandler.upgradeElement(buttonSaveTemplate.get(0));
+	componentHandler.upgradeElement(buttonUploadTemplate.get(0));
 	
 	return $('<tr></tr>', {
 		'class': 'header',
@@ -1289,16 +1041,95 @@ function RoundTimeForDay(dayId) {
 	}
 }
 
+function RoundDecimalToQuarters(decimal) {
+	return ((Math.round(decimal * 4) / 4).toFixed(2)*1).toString();
+}
+
 
 function CreateTemplateMenu(dayId) {
-	/*<label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="checkbox-2">
-	  <input type="checkbox" id="checkbox-2" class="mdl-checkbox__input">
-	  <span class="mdl-checkbox__label">Checkbox</span>
-	</label>
+	$('.trTimeChecker.task[dayid="' + dayId + '"] input[idtype=inputTask]').each(
+		function(index) {
+			var id = $(this).attr('id') + '_' + index;
+			
+			var checkbox = $('<input />', {
+				type: 'checkbox',
+				'class': 'mdl-checkbox__input templateMenuCheckbox ' + dayId,
+				id: id
+			});
+			
+			var label = $('<label></label>', {
+				'class': 'mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect templateMenuLabel ' + dayId,
+				'for': id
+			})
+			.css({
+				width: '0px'
+			})
+			.append(checkbox);
+			
+			$(this).before(label);
+			
+			componentHandler.upgradeElement(label.get(0));
+		}
+	);
+}
+
+function SaveTemplate(dayId) {		
+	var taskList = [];
 	
-	$('.trTimeChecker[dayid="' + dayId + '"]').each(function() {
+	$('.' + dayId + '.templateMenuCheckbox:checked').each(
+		function() {
+			var currentRow = $(this).parent().parent();
+			var task = currentRow.find('[idtype=inputTask]').val();
+			if (task) {
+				taskList[taskList.length] = task;
+			}
+		}
+	);
+	
+	var length = taskList.length;
+	
+	if(length) {	
+		for(var i = 0; i < length; i++) {
+			localStorage['templateTask' + i] = taskList[i];
+		}
 		
-	});*/
+		var oldNumber = localStorage['templateNumber'];
+		if (oldNumber) {
+			for(var j = length; j < oldNumber; j++) {
+				localStorage.removeItem('templateTask' + j);
+			}
+		}
+		
+		localStorage['templateNumber'] = length;
+	}
+}
+
+function UploadTemplate(dayId, taskLastIndex) {	
+	var	prefix = GetCurrentMonthAndYearPrefix();
+	var count = localStorage['templateNumber'];
+	if(!count) {
+		return;
+	}
+	
+	$('.trTimeChecker[dayid=' + dayId + '][taskindex=' + taskLastIndex + ']').last().remove();
+	var previousRow = $('.trTimeChecker[dayid=' + dayId + '][taskindex=' + (+taskLastIndex - 1) + ']').last();
+	
+	for (var i = 0; i < count; i++, taskLastIndex++) {
+		var task = localStorage['templateTask' + i];
+		var newRow = CreateTimeCheckerRow(dayId, prefix, taskLastIndex);
+		var input = newRow.find('[idtype=inputTask]');
+		input.val(task);
+		localStorage[input.attr('id')] = task;
+		
+		previousRow.after(newRow);
+		previousRow = newRow;
+	}
+	
+	return taskLastIndex - 1;
+}
+
+function DeleteMenu(dayId) {
+	$('.templateMenuLabel.' + dayId).remove();
 }
 
 $(document).ready ( function() {
@@ -1667,28 +1498,64 @@ $(document).ready ( function() {
 	document.querySelectorAll('[idtype="buttonCreateTemplate"]').forEach(function(item) {
 		item.onclick = function(e) {
 			var currentRow = $(this).parent().parent();
-			var dayId = currentRow.attr('dayid');
-			
+			var dayId = currentRow.attr('dayid');			
 			CreateTemplateMenu(dayId);
+
+			$(this).hide();
+			var saveId = '#' + $(this).attr('id').replace('Create', 'Save');
+			$(saveId).show();
+		};
+	});
+	
+	document.querySelectorAll('[idtype="buttonSaveTemplate"]').forEach(function(item) {
+		item.onclick = function(e) {
+			var currentRow = $(this).parent().parent();
+			var dayId = currentRow.attr('dayid');			
+			SaveTemplate(dayId);
+			DeleteMenu(dayId);
+
+			$(this).hide();
+			var saveId = '#' + $(this).attr('id').replace('Save', 'Create');
+			$(saveId).show();
+		};
+	});
+	
+	document.querySelectorAll('[idtype="buttonUploadTemplate"]').forEach(function(item) {
+		item.onclick = function(e) {
+			var currentRow = $(this).parent().parent();
+			var dayId = currentRow.attr('dayid');	
+			rowsIndex[prefix + dayId] = UploadTemplate(dayId, rowsIndex[prefix + dayId]);
+			rowsIndex[prefix + dayId] = CheckRowsNumber(rowsIndex[prefix + dayId], dayId);
+			rowsIndex[prefix + dayId] = RecountIds(dayId);
+			if (rowsIndex[prefix + dayId]) {
+				localStorage[prefix + dayId] = rowsIndex[prefix + dayId];
+			} else {
+				localStorage.removeItem(prefix + dayId);
+			}
 		};
 	});
 
 	document.getElementById('timeChangeToDecimalButton').onclick = function(e) {
 		shouldDecimalTimeBeShown = !shouldDecimalTimeBeShown;
 		if (shouldDecimalTimeBeShown) {
-			console.log('DecimalTime');
-
 			$('input[idtype=inputTime]').each(
 				function() {
 					var time = $(this).val();
-					if(time && !isInt(+time) && !isFloat(+time)) {
-						$(this).val(ToDecimal(time));
+					if(time) {
+						var regExp = /^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$/;
+						if (regExp.test(time)) {
+							time = RoundDecimalToQuarters(ToDecimal(time));
+						} else {
+							if(isInt(+time) || isFloat(+time)) {
+								time = RoundDecimalToQuarters(time);
+							}								
+						}				
+					
+						$(this).val(time);
 					}
 				}
 			);
 		} else {
-			console.log('UsualTime');
-
 			$('input[idtype=inputTime]').each(
 				function() {
 					var id = $(this).attr('id');
