@@ -97,6 +97,9 @@ function ShiftLocalStorageData(storagePeriod) {
 		);
 }
 
+/**
+ * @return {number}
+ */
 function SetUpDay(currentRow, prefix) {
 	var dayId = currentRow.attr('id');
 
@@ -889,7 +892,7 @@ function CreateHeaderRow(dayId, prefix) {
 	.css({
 		display: 'flex'
 	})
-	.append(divTitleTime, tooltipToProperView, buttonToProperView);
+	.append(divTitleTime/*, tooltipToProperView, buttonToProperView*/);
 
 	var tdComment = $('<td></td>', {
 		colspan: 2
@@ -1191,6 +1194,9 @@ function ShiftSubtask(taskIndex, dayId, prefix) {
 	currentRow.remove();
 }
 
+/**
+ * @return {number}
+ */
 function ToDecimal(time) {
 	var regExp = /^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$/;
 	
@@ -1204,13 +1210,16 @@ function ToDecimal(time) {
 	var position = +time.indexOf(":");
 	var hours = isNegative ? +time.substr(1, position - 1) : +time.substr(0, position);
 	var minutes = +time.substr(position + 1);
-	var decimaMinutes = (+(+ minutes/60)).toFixed(2);
-	var stringMinutesPosition = decimaMinutes.indexOf('.')
-	var stringMinutes = decimaMinutes.substr(stringMinutesPosition + 1);
+	var decimalMinutes = (+(+ minutes/60)).toFixed(2);
+	var stringMinutesPosition = decimalMinutes.indexOf('.');
+	var stringMinutes = decimalMinutes.substr(stringMinutesPosition + 1);
 	
 	return +((isNegative ? '-' : '') + hours + '.' + stringMinutes);
 }
 
+/**
+ * @return {string}
+ */
 function ToTime(decimal) {
 	
 	var position1 = +decimal.indexOf(".");
@@ -1233,9 +1242,8 @@ function ToTime(decimal) {
 		return '00:00';
 	}
 	var realMinutes = +(+minutes*60/100).toFixed();
-	var realTime = TCH_Pad(hours, 2) + ':' + TCH_Pad(realMinutes, 2);
-	
-	return realTime;	
+
+	return TCH_Pad(hours, 2) + ':' + TCH_Pad(realMinutes, 2);
 }
 
 function RoundTimeForDay(dayId) {
@@ -1258,10 +1266,7 @@ function RoundTimeForDay(dayId) {
 	for (var i = 0; i < inputs.length; i++) {
 		if (!times[i])
 			continue;
-		var value = (Math.round(+times[i] * 4) / 4).toFixed(2);
-		if (value.substr(value.length - 2) == '00') {
-			value = (+value).toFixed();
-		}
+		var value = ((Math.round(+times[i] * 4) / 4).toFixed(2)*1).toString();
 		
 		var input = inputs[i];		
 		$(input).val(value);
@@ -1287,7 +1292,7 @@ $(document).ready ( function() {
 	
 	var prefixIndex = prefix.indexOf('_');
 	var prefixMonth = prefix.substr(0, prefixIndex);
-	var prefixYear = prefix.substr(prefixIndex + 1, 4)
+	var prefixYear = prefix.substr(prefixIndex + 1, 4);
 
 	var date = new Date();
 	var month = date.getMonth() + 1;
@@ -1305,6 +1310,8 @@ $(document).ready ( function() {
 	}	
 	
 	var rowsIndex = SetUpInitialState();
+
+	var shouldDecimalTimeBeShown = false;
 	
 	$('.trTimeChecker, .other, .header').hide();
 
@@ -1321,13 +1328,35 @@ $(document).ready ( function() {
 	
 	$('.mdl-tooltip').each(function() {
 		componentHandler.upgradeElement(this);	
-	})
+	});
 
 	$(document).on('input', '[idtype="inputTask"], [idtype="inputComment"], [idtype="inputTime"]',
 		function()
 		{
-			localStorage[$(this).attr('id')] = $(this).val();
+			var regExp = /^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$/;
+			var value = $(this).val();
+			var id = $(this).attr('id');
 
+
+			if($(this).attr('idtype') == 'inputTime') {
+				if (!value) {
+					localStorage.removeItem(id);
+				} else {
+					if (regExp.test(value)) {
+						localStorage[id] = value;
+					} else {
+						if (isInt(+value) || isFloat(+value)) {
+							localStorage[id] = ToTime(value);
+						}
+					}
+				}
+			} else {
+				if (value) {
+					localStorage[id] = value;
+				} else {
+					localStorage.removeItem($(this).attr('id'));
+				}
+			}
 			var mainTr = $(this).parent().parent();
 			var dayId = mainTr.attr('dayid');
 			rowsIndex[prefix + dayId] = CheckRowsNumber(rowsIndex[prefix + dayId], dayId);
@@ -1473,6 +1502,7 @@ $(document).ready ( function() {
 
 			var mainRow = $(this).parent().parent();
 			mainRow.find('[idtype=startTime]').text(time);
+			mainRow.find('[idtype=inputTime]').prop('disabled', true);
 
 			var dayId = mainRow.attr('dayid');
 			var taskIndex = mainRow.attr('taskindex');
@@ -1504,6 +1534,7 @@ $(document).ready ( function() {
 
 			var mainRow = $(this).parent().parent();
 			var dayId = mainRow.attr('dayid');
+			mainRow.find('[idtype=inputTime]').prop('disabled', false);
 
 			var taskIndex = mainRow.attr('taskindex');
 			var subtaskIndex = mainRow.attr('subtaskindex') ? mainRow.attr('subtaskindex') : 0;
@@ -1574,6 +1605,7 @@ $(document).ready ( function() {
 	$(document).on('click', '#currentDayToggle',
 		function (){
 			$('button.resetButton').click();
+			var dayId = GetCurrentDayId();
 			if ($(this).hasClass('mdl-button--accent')) {
 				$(this).removeClass('mdl-button--raised mdl-button--accent');
 
@@ -1581,17 +1613,13 @@ $(document).ready ( function() {
 				$('.trTimeChecker').hide();
 				$('.other').hide();
 				$('.header').hide();
-
-				var dayId = GetCurrentDayId();
 				$('#' + dayId).first().removeClass('timesheetOpened');
 
 			} else {
 				$(this).addClass('mdl-button--raised mdl-button--accent');
-				var dayId = GetCurrentDayId();
 
 				$('tr.intervalRow, tr[id], tr.dayoff').hide();
 				$('#' + dayId + ', [dayid=' + dayId + ']').show();
-
 				$('tr[id]:not(.future):not(.trTimeChecker):not(.other):not(.header)').removeClass('timesheetOpened');
 				$('#' + dayId).first().addClass('timesheetOpened');
 
@@ -1608,6 +1636,8 @@ $(document).ready ( function() {
 			$('.header').hide();
 
 			$('.timesheetOpened').removeClass('timesheetOpened');
+
+			SetTableHeightForTime();
 		}
 	);
 	
@@ -1629,4 +1659,28 @@ $(document).ready ( function() {
 		};
 	});
 
+	document.getElementById('timeChangeToDecimalButton').onclick = function(e) {
+		shouldDecimalTimeBeShown = !shouldDecimalTimeBeShown;
+		if (shouldDecimalTimeBeShown) {
+			console.log('DecimalTime');
+
+			$('input[idtype=inputTime]').each(
+				function() {
+					var time = $(this).val();
+					if(time) {
+						$(this).val(ToDecimal(time));
+					}
+				}
+			);
+		} else {
+			console.log('UsualTime');
+
+			$('input[idtype=inputTime]').each(
+				function() {
+					var id = $(this).attr('id');
+					$(this).val(localStorage[id]);
+				}
+			);
+		}
+	};
 });
