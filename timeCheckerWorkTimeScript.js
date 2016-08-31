@@ -1111,8 +1111,9 @@ function UploadTemplate(dayId, taskLastIndex) {
 		return;
 	}
 	
-	$('.trTimeChecker[dayid=' + dayId + '][taskindex=' + taskLastIndex + ']').last().remove();
-	var previousRow = $('.trTimeChecker[dayid=' + dayId + '][taskindex=' + (+taskLastIndex - 1) + ']').last();
+	var lastRow = $('.trTimeChecker[dayid=' + dayId + '][taskindex=' + taskLastIndex + ']').last();
+	var previousRow = lastRow.prev();
+	lastRow.remove();
 	
 	for (var i = 0; i < count; i++, taskLastIndex++) {
 		var task = localStorage['templateTask' + i];
