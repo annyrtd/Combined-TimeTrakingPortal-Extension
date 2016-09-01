@@ -89,7 +89,7 @@ function ShiftLocalStorageData(storagePeriod) {
 					localStorage[storagePeriod + '_' + key] = localStorage[key];
 					localStorage.removeItem(key);
 				} else {
-					if (localStorage.includes('day_')) {
+					if (key.includes('day_')) {
 						localStorage.removeItem(key);
 					}
 				}
