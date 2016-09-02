@@ -548,7 +548,7 @@ function GetTimeForWeekLeft()
 	var sumRealTime = "00:00";
 	
 	$("tr.intervalRow")
-	.not('[style="display: none;"]')
+	.not('[style~="display: none;"]')
 	.first()
 	.nextAll()
 	.not('.trTimeChecker')
@@ -586,7 +586,7 @@ function GetCurrentTimeForWeek()
 	.not('.trTimeChecker')
 	.not('.other')
 	.not('.header')
-	.not('[style="display: none;"]')
+	.not('[style~="display: none;"]')
 	.each(
 		function(index)
 		{
@@ -599,7 +599,7 @@ function GetCurrentTimeForWeek()
 function GetCurrentTimeForWeek_ForStudent()
 {
 	var sum = "00:00";
-	$("tr[id]").not(".future").not('[style="display: none;"]').each(
+	$("tr[id]").not(".future").not('[style~="display: none;"]').each(
 		function(index)
 		{
 			sum = SumOfTime(sum, $(this).children(".time").first().text());
@@ -610,7 +610,7 @@ function GetCurrentTimeForWeek_ForStudent()
 
 function GetTimeOfHolidaysForWeek()
 {	
-	var hours = 8 * $("tr.dayoff").not('tr[id]').not('[style="display: none;"]').length;
+	var hours = 8 * $("tr.dayoff").not('tr[id]').not('[style~="display: none;"]').length;
 	return hours + ":00";
 }
 
@@ -618,7 +618,7 @@ function GetSumReportTimeForWeek()
 {
 	var sum = "00:00";
 	$('tr.intervalRow')
-	.not('[style="display: none;"]')
+	.not('[style~="display: none;"]')
 	.first()
 	.nextUntil('tr.intervalRow')
 	.filter('tr[id]')
@@ -646,7 +646,7 @@ function GetSumReportTimeForWeek_ForStudent()
 {
 	var sum = "00:00";
 	$('tr.intervalRow')
-	.not('[style="display: none;"]')
+	.not('[style~="display: none;"]')
 	.first()
 	.nextUntil('tr.intervalRow')
 	.filter('tr[id]')
@@ -916,7 +916,7 @@ function RemoveUnnesessaryBlocks()
 
 function AddRowBetweenWeeksWithWeekNumber()
 {	
-	var length = +$("th").not("[style='display: none;']").length + 1;
+	var length = +$("th").not('[style~="display: none;"]').length + 1;
 	AddFirstRowBetweenWeeks(length);
 	var numberOfWeek = 2;
 	var previousDay = $("tr[id], tr.dayoff")
@@ -1229,7 +1229,7 @@ function SetTableHeightForTime()
 
 function SetConclusionHeight()
 {
-	var conclusionHeight = 20 * ($('div.conclusion span.timeStatisticsSpan').not('[style="display: none;"]').length + 2);
+	var conclusionHeight = 20 * ($('div.conclusion span.timeStatisticsSpan').not('[style~="display: none;"]').length + 2);
 	$('div.conclusion').height(conclusionHeight);
 }
 

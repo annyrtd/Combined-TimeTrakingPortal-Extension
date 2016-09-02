@@ -205,8 +205,7 @@ function SetClassesOnColumns()
 
 
 // добавляют select на колонки 
-function CreateSelectForGroups()
-{
+function CreateSelectForGroups() {
 	var arrayOfGroupNames = GetGroupNames();
 	
 	var button, tooltip;
@@ -270,8 +269,7 @@ function GetGroupNames() {
 	return arrayOfGroupNames;
 }
 
-function CreateSelectOnWorkState()
-{
+function CreateSelectOnWorkState() {
 	var select = $("<select></select>", {
 		id: "workStateSelect",
 		title: 'Выберите состояние'
@@ -285,8 +283,7 @@ function CreateSelectOnWorkState()
 	$("th.indicator").eq(0).append(select);
 }
 
-function CreateSelectOnRoom()
-{
+function CreateSelectOnRoom() {
 	var arrayOfRoomNumbers = GetRoomNumbers();
 	
 	var button, tooltip;
@@ -356,6 +353,18 @@ function IsMyHomeOffice()
 		return true;
 	}
 	return false;
+}
+
+function CreateSelectOnGender() {
+	var select = $("<select></select>", {
+		id: "genderSelect",
+		title: 'Выберите пол'
+	})
+	.append("<option value=''>Все</option>")	
+	.append("<option value='man'>Мужчины</option>")
+	.append("<option value='woman'>Женщины</option>");
+	
+	$("th.text.info").first().append(select);
 }
 
 
@@ -508,171 +517,213 @@ function SetFilters()
 	FilterGroup();
 	FilterWorkState();
 	FilterRoom();
-}
+	FilterGender();
 
-function FilterGroup()
-{
-	var inputText = $("select#workgroupSelect option").filter(":selected").val();
-	
-	if (inputText == "")
+
+	function FilterGroup()
 	{
-		return;
-	}
-	
-	if (inputText == "NoGroup")
-	{
-		$('td.workgroup')
-		.not("[style='display: none")
-		each(
-			function(index)
-			{
-				if ($(this).text() != "")
-					$(this).parent().hide();
-			}
-		);
+		var inputText = $("select#workgroupSelect option").filter(":selected").val();
 		
-		$('.card-square')
-		.not("[style='display: none;']")
-		.each(
-			function()
-			{
-				var span = $(this).find('span.workgroup').first();
-				if (span) 
+		if (inputText == "")
+		{
+			return;
+		}
+		
+		if (inputText == "NoGroup")
+		{
+			$('td.workgroup')
+			.not('[style~="display: none;"]')
+			each(
+				function(index)
 				{
-					$(this).hide();
+					if ($(this).text() != "")
+						$(this).parent().hide();
 				}
-			}
-		);		
-		
-		return;
-	}
-	var cellsThatContainInputText = 'td.workgroup:contains("' + inputText + '")';			
-	$('td.workgroup').not(cellsThatContainInputText).parent().hide();
-	
-	$('.card-square')
-	.not("[style='display: none;']")
-	.each(
-		function()
-		{
-			if ($(this).find('span.workgroup').first().text()				
-					!= inputText) 
-			{
-				$(this).hide();
-			}
+			);
+			
+			$('.card-square')
+			.not('[style~="display: none;"]')
+			.each(
+				function()
+				{
+					var span = $(this).find('span.workgroup').first();
+					if (span) 
+					{
+						$(this).hide();
+					}
+				}
+			);		
+			
+			return;
 		}
-	);	
-}
-
-function FilterWorkState()
-{	
-	var inputText = $("select#workStateSelect option").filter(":selected").val();
-	
-	if (inputText == "")
-	{
-		$("select#workStateSelect").attr("title", "Выберите состояние");
-		$("th.workstate i")
-		.css("color", "white")
-		.attr("title", "Выберите состояние")
-		.css("textShadow", "-1px 0 gray, 0 1px gray, 1px 0 gray, 0 -1px gray");
-		return;
-	}
-	
-	$("tbody tr")
-	.not('[style="display: none;"]')
-	.each(
-		function(index)
-		{
-			if ($(this).children("td.indicator").first().children("img").attr("src").indexOf(inputText) <= -1)
-			{					
-				$(this).hide();
-			}
-		}
-	);
-	
-	$(".card-square")
-	.not('[style="display: none;"]')
-	.each(
-		function(index)
-		{
-			if ($(this).find('.circular').attr('datavalue').indexOf(inputText) <= -1) {								
-				$(this).hide();
-			}
-		}
-	);
-	
-	var newTitle = $("select#workStateSelect option").filter(":selected").attr("title");
-	var color = $("select#workStateSelect option").filter(":selected").attr("id").replace("option_ball_", "");
-	switch(color)
-	{
-		case "green":
-			color = "#8bc349";
-			break;
-		case "blue":
-			color = "rgb(63, 81, 181)";
-			break;
-		case "yellow":
-			color = "#ffeb3b";
-			break;
-	}
-	$("select#workStateSelect").attr("title", newTitle);
-	$("th.workstate i")
-	.css("color", color)
-	.attr("title", newTitle)
-	.css("textShadow", "none");
-}
-
-function FilterRoom()
-{					
-	var inputText = $("select#roomSelect option").filter(":selected").val();
-	
-	if (inputText == "")
-	{
-		return;
-	}
-	
-	if (inputText == "NoRoom")
-	{
-		$('td.room')
-		.not('[style="display: none;"]')
-		.each(
-			function(index)
-			{
-				if ($(this).text() != "")
-					$(this).parent().hide();
-			}
-		);
+		var cellsThatContainInputText = 'td.workgroup:contains("' + inputText + '")';			
+		$('td.workgroup').not(cellsThatContainInputText).parent().hide();
 		
 		$('.card-square')
-		.not('[style="display: none;"]')
+		.not('[style~="display: none;"]')
 		.each(
 			function()
 			{
-				var span = $(this).find('span.room').first();
-				if (span) 
+				if ($(this).find('span.workgroup').first().text()				
+						!= inputText) 
 				{
 					$(this).hide();
 				}
 			}
 		);	
-		
-		return;
 	}
-	var cellsThatContainInputText = 'td.room:contains("' + inputText + '")';		
-	$('td.room').not(cellsThatContainInputText).parent().hide();
 
-	$('.card-square')
-	.not("[style='display: none;']")
-	.each(
-		function()
+	function FilterWorkState()
+	{	
+		var inputText = $("select#workStateSelect option").filter(":selected").val();
+		
+		if (inputText == "")
 		{
-			if ($(this).find('span.room').first().text()				
-					!= inputText) 
-			{
-				$(this).hide();
-			}
+			$("select#workStateSelect").attr("title", "Выберите состояние");
+			$("th.workstate i")
+			.css("color", "white")
+			.attr("title", "Выберите состояние")
+			.css("textShadow", "-1px 0 gray, 0 1px gray, 1px 0 gray, 0 -1px gray");
+			return;
 		}
-	);		
+		
+		$("tbody tr")
+		.not('[style~="display: none;"]')
+		.each(
+			function(index)
+			{
+				if ($(this).children("td.indicator").first().children("img").attr("src").indexOf(inputText) <= -1)
+				{					
+					$(this).hide();
+				}
+			}
+		);
+		
+		$(".card-square")
+		.not('[style~="display: none;"]')
+		.each(
+			function(index)
+			{
+				if ($(this).find('.circular').attr('datavalue').indexOf(inputText) <= -1) {								
+					$(this).hide();
+				}
+			}
+		);
+		
+		var newTitle = $("select#workStateSelect option").filter(":selected").attr("title");
+		var color = $("select#workStateSelect option").filter(":selected").attr("id").replace("option_ball_", "");
+		switch(color)
+		{
+			case "green":
+				color = "#8bc349";
+				break;
+			case "blue":
+				color = "rgb(63, 81, 181)";
+				break;
+			case "yellow":
+				color = "#ffeb3b";
+				break;
+		}
+		$("select#workStateSelect").attr("title", newTitle);
+		$("th.workstate i")
+		.css("color", color)
+		.attr("title", newTitle)
+		.css("textShadow", "none");
+	}
+
+	function FilterRoom()
+	{					
+		var inputText = $("select#roomSelect option").filter(":selected").val();
+		
+		if (inputText == "")
+		{
+			return;
+		}
+		
+		if (inputText == "NoRoom")
+		{
+			$('td.room')
+			.not('[style~="display: none;"]')
+			.each(
+				function(index)
+				{
+					if ($(this).text() != "")
+						$(this).parent().hide();
+				}
+			);
+			
+			$('.card-square')
+			.not('[style~="display: none;"]')
+			.each(
+				function()
+				{
+					var span = $(this).find('span.room').first();
+					if (span) 
+					{
+						$(this).hide();
+					}
+				}
+			);	
+			
+			return;
+		}
+		var cellsThatContainInputText = 'td.room:contains("' + inputText + '")';		
+		$('td.room').not(cellsThatContainInputText).parent().hide();
+
+		$('.card-square')
+		.not('[style~="display: none;"]')
+		.each(
+			function()
+			{
+				if ($(this).find('span.room').first().text()				
+						!= inputText) 
+				{
+					$(this).hide();
+				}
+			}
+		);		
+	}
+	
+	function FilterGender()
+	{					
+		var inputText = $("select#genderSelect option").filter(":selected").val();
+		
+		if (inputText == "")
+		{
+			return;
+		}
+		
+		$('table.full-size tbody tr')
+		.not('[style~="display: none;"]')
+		.each(
+			function()
+			{
+				var employee = $(this).find('td.employee').text();
+				var card = $('.card-square:contains(' + employee + ')').first();
+				if (card.find('.' + inputText).length <= 0) {
+					$(this).hide();
+					card.hide();
+				}				
+			}
+		);
+	}	
 }
+	
+	/*function FilterGender(gender) {
+		if (gender) {
+			$('div.card-square').each(
+				function() {
+					if ($(this).find('.' + gender).length > 0) {
+						$(this).show();
+					} else {
+						$(this).hide();					
+					}
+				}
+			);				
+		} else {
+			$('div.card-square').show();
+		}	
+	}*/
 
 
 //Выбор "домашних" групп и комнат
@@ -696,7 +747,7 @@ function SelectHomeGroup()
 	if (inputText == "NoGroup")
 	{
 		$('td.workgroup')
-		.not('[style="display: none;"]')
+		.not('[style~="display: none;"]')
 		.each(
 			function(index)
 			{
@@ -712,7 +763,7 @@ function SelectHomeGroup()
 	$('td.workgroup').not(cellsThatContainInputText).parent().hide();	
 	
 	$('.card-square')
-	.not('[style="display: none;"]')
+	.not('[style~="display: none;"]')
 	.each(
 		function()
 		{
@@ -723,24 +774,25 @@ function SelectHomeGroup()
 			}
 		}
 	);	
-}
 
-function GetMyGroupName()
-{
-	var groupname = "";
-	var myName = GetMyName();
-	
-	$('td.workgroup').each(
-		function(index)
-		{
-			if ($(this).parent().children("td.employee").text() == myName)
+	function GetMyGroupName()
+	{
+		var groupname = "";
+		var myName = GetMyName();
+		
+		$('td.workgroup').each(
+			function(index)
 			{
-				groupname = $(this).text();
-				return false;
+				if ($(this).parent().children("td.employee").text() == myName)
+				{
+					groupname = $(this).text();
+					return false;
+				}
 			}
-		}
-	);
-	return groupname;
+		);
+		return groupname;
+	}
+
 }
 
 function GetMyName()
@@ -774,7 +826,7 @@ function SelectHomeRoom()
 	if (inputText == "NoRoom")
 	{
 		$('td.room')
-		.not('[style="display: none;"]')
+		.not('[style~="display: none;"]')
 		.each(
 			function(index)
 			{
@@ -788,7 +840,7 @@ function SelectHomeRoom()
 	$('td.room').not(cellsThatContainInputText).parent().hide();	
 	
 	$('.card-square')
-	.not('[style="display: none;"]')
+	.not('[style~="display: none;"]')
 	.each(
 		function()
 		{
@@ -799,24 +851,26 @@ function SelectHomeRoom()
 			}
 		}
 	);
-}
 
-function GetMyRoomNumber()
-{
-	var roomNumber = "";
-	var myName = GetMyName();
-	
-	$('td.room').each(
-		function(index)
-		{
-			if ($(this).parent().children("td.employee").text() == myName)
+
+	function GetMyRoomNumber()
+	{
+		var roomNumber = "";
+		var myName = GetMyName();
+		
+		$('td.room').each(
+			function(index)
 			{
-				roomNumber = $(this).text();
-				return false;
+				if ($(this).parent().children("td.employee").text() == myName)
+				{
+					roomNumber = $(this).text();
+					return false;
+				}
 			}
-		}
-	);
-	return roomNumber;
+		);
+		return roomNumber;
+	}
+
 }
 
 function CreateMDLCard()
@@ -838,7 +892,7 @@ function CreateMDLCard()
 function ResizeTableHeader()
 {
 	var $table = $('table.full-size'),
-		$bodyCells = $table.find('tbody tr').not("[style='display: none;']").first().children(),
+		$bodyCells = $table.find('tbody tr').not('[style~="display: none;"]').first().children(),
 		colWidth;
 				
 	colWidth = $bodyCells.map(
@@ -950,7 +1004,11 @@ function CheckResetButton()
 	if ($("#workgroupSelect").val() != "" ||
 	$("#workStateSelect").val() != "" ||
 	$("#roomSelect").val() != "" || 
-	$("#searchInput").val() != "")
+	$("#genderSelect").val() != "" || 
+	$("#searchInput").val() != "" ||
+	$("#card-man").hasClass('checked') ||
+	$("#card-woman").hasClass('checked') ||
+	$("#card-searchInput").val() != "")
 	{
 		$("button#idReset").fadeIn("fast");
 		$("button#card-idReset").fadeIn("fast");
@@ -1045,11 +1103,14 @@ function ResetTableParametres()
 {
 	$('.card-square').show();
 	$("table.full-size > tbody > tr").show();
-	$("#workgroupSelect, #workStateSelect, #roomSelect").val("");
+	$("#workgroupSelect, #workStateSelect, #roomSelect, #genderSelect").val("");
 	$('#workstateMenu').attr('datavalue', '')
 	$('#stateMenuSpan').text('Статус')
 	$('#groupMenuSpan').text('Группа');
 	$('#roomMenuSpan').text('Комната');
+	
+	$('#card-man, #card-woman').removeClass('checked');			
+	$('#card-allpeople').addClass('checked');
 				
 	$("#searchInput").val("").parent().removeClass("is-dirty");
 	$("#card-searchInput").val("").parent().removeClass("is-dirty");
@@ -1193,124 +1254,125 @@ function getMDLCard(tr, index)
 	.append(supportingtext, cardmenu);	
 	
 	return maindiv;	
+
+
+	function CreateTitleRow(tr, index) 
+	{
+		var color = tr.children('td.indicator.workstate').children('i').first().css('color').replace('rgb', 'rgba');
+		color = color.substr(0, color.length - 1);
+		color += ',1)';
+		
+		var imagediv = $('<div id="person-image' + index + '" class="circular" ></div>')
+		.css({
+			border: '4px solid ' + color,
+			background: color
+		});
+		
+		var datavalue = tr.children('td.indicator.workstate').find('img').attr('src');
+		imagediv.attr('datavalue', datavalue);
+		
+		var h2 = $('<div></div>', {
+			'class': 'employee'		
+		})
+		.css({
+			alignSelf: 'flex-start'
+		})
+		.append(tr.children('td.text.employee').html());	
+		
+		var workgroup = tr.children('td.text.workgroup').text();
+		
+		var titleDivSmall = $('<div></div>', {
+			'class': 'rowDiv titleDivSmall'
+		})
+		.append(h2)
+		.append(workgroup ? '<span class="workgroup">' + workgroup + '</span>' : '');
+		
+		var rowDiv = $('<div></div>', {
+			'class': 'rowDiv'
+		})
+		.append(imagediv, titleDivSmall);
+		
+		return rowDiv;
+	}
+
+	function CreateInfoRow(tr, index) 
+	{
+		var info = tr.children('td.text.info').first().html();
+		var infoSpan = $('<span class="info"></span>').append(info);
+		var infoIcon = $('<i class="material-icons">info_outline</i>');
+		var infoDiv = $('<div></div>', {
+			'class': 'rowDiv'
+		}).append(infoIcon, infoSpan);
+		
+		return info.trim() ? infoDiv : '';
+	}
+
+	function CreatePhonefirstRow(tr, index) 
+	{
+		var phonefirst = tr.children('td.text.phone.first').text();
+		var phonefirstSpan = $('<span class="phone first"></span>').append(phonefirst);
+		var phonefirstIcon = $('<i class="material-icons">phonelink</i>');
+		var phonefirstDiv = $('<div></div>', {
+			'class': 'rowDiv'
+		}).append(phonefirstIcon, phonefirstSpan);
+
+		return phonefirst ? phonefirstDiv : '';
+	}
+
+	function CreatePhonesecondRow(tr, index) 
+	{
+		var phonesecond = tr.children('td.text.phone.second').text();
+		var phonesecondSpan = $('<span class="phone second"></span>').append(phonesecond);
+		var phonesecondIcon = $('<i class="material-icons">smartphone</i>');
+		var phonesecondDiv = $('<div></div>', {
+			'class': 'rowDiv'
+		}).append(phonesecondIcon, phonesecondSpan);
+		
+		return phonesecond ? phonesecondDiv : '';
+	}
+
+	function CreatePhonethirdRow(tr, index) 
+	{
+		var phonethird = tr.children('td.text.phone.third').text();
+		var phonethirdSpan = $('<span class="phone third"></span>').append(phonethird);
+		var phonethirdIcon = $('<i class="material-icons">phone</i>');
+		var phonethirdDiv = $('<div></div>', {
+			'class': 'rowDiv'
+		}).append(phonethirdIcon, phonethirdSpan);
+		
+		return phonethird ? phonethirdDiv : '';
+	}
+
+	function CreateRoomRow(tr, index)
+	{
+		var room = tr.children('td.text.room').text();
+		var roomSpan = $('<span class="room"></span>').append(room);
+		var roomIcon = $('<i class="material-icons">room</i>');
+		var roomDiv = $('<div></div>', {
+			'class': 'rowDiv'
+		}).append(roomIcon, roomSpan);
+		
+		return room ?  roomDiv : '';
+	}
+
+	function CreateEmailRow(tr, index) 
+	{
+		var email = tr.find('td.indicator.mail a img').attr('title');
+		var emailSpan = $('<span class="email"></span>').append(email);
+		var emailIcon = $('<i class="material-icons">email</i>');
+		
+		var emailDiv = $('<div></div>', {
+			'class': 'rowDiv'
+		}).append(emailIcon, emailSpan);
+		
+		var emailLink = $('<a></a>', {
+			href: tr.find('td.indicator.mail a').attr('href')		
+		}).append(emailDiv);
+		
+		return email ?  emailLink : '';
+	}
+
 }
-
-function CreateTitleRow(tr, index) 
-{
-	var color = tr.children('td.indicator.workstate').children('i').first().css('color').replace('rgb', 'rgba');
-	color = color.substr(0, color.length - 1);
-	color += ',1)';
-	
-	var imagediv = $('<div id="person-image' + index + '" class="circular" ></div>')
-	.css({
-		border: '4px solid ' + color,
-		background: color
-	});
-	
-	var datavalue = tr.children('td.indicator.workstate').find('img').attr('src');
-	imagediv.attr('datavalue', datavalue);
-	
-	var h2 = $('<div></div>', {
-		'class': 'employee'		
-	})
-	.css({
-		alignSelf: 'flex-start'
-	})
-	.append(tr.children('td.text.employee').html());	
-	
-	var workgroup = tr.children('td.text.workgroup').text();
-	
-	var titleDivSmall = $('<div></div>', {
-		'class': 'rowDiv titleDivSmall'
-	})
-	.append(h2)
-	.append(workgroup ? '<span class="workgroup">' + workgroup + '</span>' : '');
-	
-	var rowDiv = $('<div></div>', {
-		'class': 'rowDiv'
-	})
-	.append(imagediv, titleDivSmall);
-	
-	return rowDiv;
-}
-
-function CreateInfoRow(tr, index) 
-{
-	var info = tr.children('td.text.info').first().html();
-	var infoSpan = $('<span class="info"></span>').append(info);
-	var infoIcon = $('<i class="material-icons">info_outline</i>');
-	var infoDiv = $('<div></div>', {
-		'class': 'rowDiv'
-	}).append(infoIcon, infoSpan);
-	
-	return info.trim() ? infoDiv : '';
-}
-
-function CreatePhonefirstRow(tr, index) 
-{
-	var phonefirst = tr.children('td.text.phone.first').text();
-	var phonefirstSpan = $('<span class="phone first"></span>').append(phonefirst);
-	var phonefirstIcon = $('<i class="material-icons">phonelink</i>');
-	var phonefirstDiv = $('<div></div>', {
-		'class': 'rowDiv'
-	}).append(phonefirstIcon, phonefirstSpan);
-
-	return phonefirst ? phonefirstDiv : '';
-}
-
-function CreatePhonesecondRow(tr, index) 
-{
-	var phonesecond = tr.children('td.text.phone.second').text();
-	var phonesecondSpan = $('<span class="phone second"></span>').append(phonesecond);
-	var phonesecondIcon = $('<i class="material-icons">smartphone</i>');
-	var phonesecondDiv = $('<div></div>', {
-		'class': 'rowDiv'
-	}).append(phonesecondIcon, phonesecondSpan);
-	
-	return phonesecond ? phonesecondDiv : '';
-}
-
-function CreatePhonethirdRow(tr, index) 
-{
-	var phonethird = tr.children('td.text.phone.third').text();
-	var phonethirdSpan = $('<span class="phone third"></span>').append(phonethird);
-	var phonethirdIcon = $('<i class="material-icons">phone</i>');
-	var phonethirdDiv = $('<div></div>', {
-		'class': 'rowDiv'
-	}).append(phonethirdIcon, phonethirdSpan);
-	
-	return phonethird ? phonethirdDiv : '';
-}
-
-function CreateRoomRow(tr, index)
-{
-	var room = tr.children('td.text.room').text();
-	var roomSpan = $('<span class="room"></span>').append(room);
-	var roomIcon = $('<i class="material-icons">room</i>');
-	var roomDiv = $('<div></div>', {
-		'class': 'rowDiv'
-	}).append(roomIcon, roomSpan);
-	
-	return room ?  roomDiv : '';
-}
-
-function CreateEmailRow(tr, index) 
-{
-	var email = tr.find('td.indicator.mail a img').attr('title');
-	var emailSpan = $('<span class="email"></span>').append(email);
-	var emailIcon = $('<i class="material-icons">email</i>');
-	
-	var emailDiv = $('<div></div>', {
-		'class': 'rowDiv'
-	}).append(emailIcon, emailSpan);
-	
-	var emailLink = $('<a></a>', {
-		href: tr.find('td.indicator.mail a').attr('href')		
-	}).append(emailDiv);
-	
-	return email ?  emailLink : '';
-}
-
 
 // Добавление меню фильтрации для карточек
 function AddFilterMenuForCards()
@@ -1327,300 +1389,338 @@ function AddFilterMenuForCards()
 	CreateGroupButton(div);
 	CreateRoomButton(div);
 	CreateGenderButtons(div);
+	//CreateEmailButton(div);
 	CreateResetButton(div);
 	
 	div.hide();	
-}
 
-function CreateCardSearchInput(parent)
-{
-	var input = $("<input>", {
-		type: "text",
-		"class": "mdl-textfield__input",
-		id: "card-searchInput"
-	});
-	
-	var labelForInput = $("<label></label>", {
-		"class": "mdl-textfield__label",
-		"for": "card-searchInput",
-		"style": "line-height: 12pt !important;"
-	}).append('Сотрудник');	
-	
-	var icon = $('<i class="material-icons" style="float: left; margin-top: 22px;">search</i>');
-	
-	var div = $("<div></div>", {
-		"class": "mdl-textfield mdl-js-textfield"
-	}).append(input, labelForInput);
-	
-	var div2 = $("<div class='toggle'></div>").append(icon,div);
-	
-	parent.append(div2);
-	
-	componentHandler.upgradeElement(div.get(0));
-	
-	ChangeTitleToMDTooltip("card-searchInput", 
-		"Введите фамилию <br>или имя сотрудника");
-}
 
-function CreateHomeButtons(parent) 
-{
-	
-	var homeGroupButton, tooltipHomeGroupButton	
-	var homeRoomButton, tooltipHomeRoomButton;
-	if (IsMyHomeOffice())
+	function CreateCardSearchInput(parent)
 	{
-		homeGroupButton = $('<button style="float: left;" id="card-groupSelectButton" class="mdl-button mdl-js-button mdl-button--icon' 
-			+'  mdl-button--accent mdl-js-ripple-effect"><i class="material-icons">group</i></button>')
-		tooltipHomeGroupButton = $('<div class="mdl-tooltip" for="card-groupSelectButton">Моя группа</div>');	
+		var input = $("<input>", {
+			type: "text",
+			"class": "mdl-textfield__input",
+			id: "card-searchInput"
+		});
 		
-		homeRoomButton = $('<button style="float: left;" id="card-roomSelectButton" class="mdl-button mdl-js-button mdl-button--icon' 
-			+'  mdl-button--accent mdl-js-ripple-effect"><i class="material-icons">weekend</i></button>')
-		tooltipHomeRoomButton = $('<div class="mdl-tooltip" for="card-roomSelectButton">Моя комната</div>');	
+		var labelForInput = $("<label></label>", {
+			"class": "mdl-textfield__label",
+			"for": "card-searchInput",
+			"style": "line-height: 12pt !important;"
+		}).append('Сотрудник');	
+		
+		var icon = $('<i class="material-icons" style="float: left; margin-top: 22px;">search</i>');
+		
+		var div = $("<div></div>", {
+			"class": "mdl-textfield mdl-js-textfield"
+		}).append(input, labelForInput);
+		
+		var div2 = $("<div class='toggle'></div>").append(icon,div);
+		
+		parent.append(div2);
+		
+		componentHandler.upgradeElement(div.get(0));
+		
+		ChangeTitleToMDTooltip("card-searchInput", 
+			"Введите фамилию <br>или имя сотрудника");
 	}
-	
-	if (homeGroupButton !== undefined && tooltipHomeGroupButton !== undefined && $('div.card-square span.workgroup').length > 0)
-	{
-		parent.append(homeGroupButton, tooltipHomeGroupButton);
-		componentHandler.upgradeElement(homeGroupButton.get(0));
-		componentHandler.upgradeElement(tooltipHomeGroupButton.get(0));	
-	}	
-	
-	if (homeRoomButton !== undefined && tooltipHomeRoomButton !== undefined && $('div.card-square span.room').length > 0)
-	{
-		parent.append(homeRoomButton, tooltipHomeRoomButton);
-		componentHandler.upgradeElement(homeRoomButton.get(0));
-		componentHandler.upgradeElement(tooltipHomeRoomButton.get(0));	
-	}	
-}
 
-function CreateStateButton(parent)
-{
-	var statemenuId = 'workstateMenu';
-	
-	var stateIcon = $('<i class="material-icons">lens</i>');
-	var stateSpan = $('<span id="stateMenuSpan">Статус</span>');
-	
-	var stateButton = $('<button></button>', {
-		id: statemenuId,
-		'class': 'mdl-button mdl-js-button',
-		datavalue: ''
-	}).append(stateIcon)
-	.append(stateSpan);
-	
-	//var stateColors = ['white', '#8bc349', 'rgb(63, 81, 181)', '#ffeb3b', 'gray'];	
-	var stateText = ['Статус', 'На работе', 'Работает удаленно', 'Закончил работу', 'Отсутствует'];
-	var stateValues = ['', '/Content/ball_green.png', '/Content/ball_blue.png', '/Content/ball_yellow.png', '/Content/ball_gray.png'];
-	var li, ic, sp;
-	
-	var stateUl = $('<ul></ul>', {
-		'class': 'mdl-menu mdl-menu--bottom-left mdl-js-menu mdl-js-ripple-effect',
-		'for': statemenuId
-	});
-	
-	for(var i = 0; i < stateValues.length; i++) {		
-		ic = $('<i class="material-icons">lens</i>');
-		sp = $('<span class="stateTextSpan">' + stateText[i] + '</span>')
+	function CreateHomeButtons(parent) 
+	{
 		
-		li = $('<li></li>', {
-			'class': 'mdl-menu__item selectLi',
-			datavalue: stateValues[i],
-		})
-		.append(ic)
-		.append(sp);
-		
-		stateUl.append(li);
-	}
-	
-	var stateSelect = $('<div class="card-stateSelect"></div>')
-	.append(stateButton, stateUl);
-	
-	parent.append(stateSelect);
-	componentHandler.upgradeElement(stateButton.get(0));
-	componentHandler.upgradeElement(stateUl.get(0));
-	componentHandler.upgradeElement(stateSelect.get(0));
-}
-
-function CreateGroupButton(parent) 
-{
-	var groupmenuId = 'groupMenu';
-	
-	var groupSpan = $('<span id="groupMenuSpan">Группа</span>');
-	
-	var groupButton = $('<button></button>', {
-		id: groupmenuId,
-		'class': 'mdl-button mdl-js-button',
-	})
-	.append(groupSpan);
-	
-	var arrayOfGroupNames = GetGroupNames();
-	var groupText = ['Группа'].concat(arrayOfGroupNames);
-	var groupValues = [''].concat(arrayOfGroupNames);
-	
-	
-	var groupUl = $('<ul></ul>', {
-		'class': 'mdl-menu mdl-menu--bottom-left mdl-js-menu mdl-js-ripple-effect',
-		'for': groupmenuId
-	});
-	
-	var shouldGroupBeAdded = false;
-	var li;
-	
-	for(var i = 0; i < groupValues.length; i++) {		
-		li = $('<li></li>', {
-			'class': 'mdl-menu__item selectLi',
-			datavalue: groupValues[i],
-		})
-		.append(groupText[i]);
-		
-		if (groupValues[i]) {
-			shouldGroupBeAdded = true;
+		var homeGroupButton, tooltipHomeGroupButton	
+		var homeRoomButton, tooltipHomeRoomButton;
+		if (IsMyHomeOffice())
+		{
+			homeGroupButton = $('<button style="float: left;" id="card-groupSelectButton" class="mdl-button mdl-js-button mdl-button--icon' 
+				+'  mdl-button--accent mdl-js-ripple-effect"><i class="material-icons">group</i></button>')
+			tooltipHomeGroupButton = $('<div class="mdl-tooltip" for="card-groupSelectButton">Моя группа</div>');	
+			
+			homeRoomButton = $('<button style="float: left;" id="card-roomSelectButton" class="mdl-button mdl-js-button mdl-button--icon' 
+				+'  mdl-button--accent mdl-js-ripple-effect"><i class="material-icons">weekend</i></button>')
+			tooltipHomeRoomButton = $('<div class="mdl-tooltip" for="card-roomSelectButton">Моя комната</div>');	
 		}
 		
-		groupUl.append(li);
-	}
-	
-	var groupSelect = $('<div class="card-groupSelect"></div>')
-	.append(groupButton, groupUl);
-	
-	if (shouldGroupBeAdded) {
-		parent.append(groupSelect);
-		componentHandler.upgradeElement(groupButton.get(0));
-		componentHandler.upgradeElement(groupUl.get(0));
-		componentHandler.upgradeElement(groupSelect.get(0));
-	}
-}
-
-function CreateRoomButton(parent) 
-{
-	var roommenuId = 'roomMenu';
-	
-	var roomSpan = $('<span id="roomMenuSpan">Комната</span>');
-	
-	var roomButton = $('<button></button>', {
-		id: roommenuId,
-		'class': 'mdl-button mdl-js-button',
-	})
-	.append(roomSpan);
-	
-	var arrayOfRoomNumbers = GetRoomNumbers();
-	var roomText = ['Комната'].concat(arrayOfRoomNumbers);
-	var roomValues = [''].concat(arrayOfRoomNumbers);
-	
-	
-	var roomUl = $('<ul></ul>', {
-		'class': 'mdl-menu mdl-menu--bottom-left mdl-js-menu mdl-js-ripple-effect',
-		'for': roommenuId
-	});
-	
-	var shouldRoomBeAdded = false;
-	
-	for(var i = 0; i < roomValues.length; i++) {		
-		li = $('<li></li>', {
-			'class': 'mdl-menu__item selectLi',
-			datavalue: roomValues[i],
-		})
-		.append(roomText[i]);
+		if (homeGroupButton !== undefined && tooltipHomeGroupButton !== undefined && $('div.card-square span.workgroup').length > 0)
+		{
+			parent.append(homeGroupButton, tooltipHomeGroupButton);
+			componentHandler.upgradeElement(homeGroupButton.get(0));
+			componentHandler.upgradeElement(tooltipHomeGroupButton.get(0));	
+		}	
 		
-		if (roomValues[i]) {
-			shouldRoomBeAdded = true;
+		if (homeRoomButton !== undefined && tooltipHomeRoomButton !== undefined && $('div.card-square span.room').length > 0)
+		{
+			parent.append(homeRoomButton, tooltipHomeRoomButton);
+			componentHandler.upgradeElement(homeRoomButton.get(0));
+			componentHandler.upgradeElement(tooltipHomeRoomButton.get(0));	
+		}	
+	}
+
+	function CreateStateButton(parent)
+	{
+		var statemenuId = 'workstateMenu';
+		
+		var stateIcon = $('<i class="material-icons">lens</i>');
+		var stateSpan = $('<span id="stateMenuSpan">Статус</span>');
+		
+		var stateButton = $('<button></button>', {
+			id: statemenuId,
+			'class': 'mdl-button mdl-js-button',
+			datavalue: ''
+		}).append(stateIcon)
+		.append(stateSpan);
+		
+		//var stateColors = ['white', '#8bc349', 'rgb(63, 81, 181)', '#ffeb3b', 'gray'];	
+		var stateText = ['Статус', 'На работе', 'Работает удаленно', 'Закончил работу', 'Отсутствует'];
+		var stateValues = ['', '/Content/ball_green.png', '/Content/ball_blue.png', '/Content/ball_yellow.png', '/Content/ball_gray.png'];
+		var li, ic, sp;
+		
+		var stateUl = $('<ul></ul>', {
+			'class': 'mdl-menu mdl-menu--bottom-left mdl-js-menu mdl-js-ripple-effect',
+			'for': statemenuId
+		});
+		
+		for(var i = 0; i < stateValues.length; i++) {		
+			ic = $('<i class="material-icons">lens</i>');
+			sp = $('<span class="stateTextSpan">' + stateText[i] + '</span>')
+			
+			li = $('<li></li>', {
+				'class': 'mdl-menu__item selectLi',
+				datavalue: stateValues[i],
+			})
+			.append(ic)
+			.append(sp);
+			
+			stateUl.append(li);
 		}
 		
-		roomUl.append(li);
+		var stateSelect = $('<div class="card-stateSelect"></div>')
+		.append(stateButton, stateUl);
+		
+		parent.append(stateSelect);
+		componentHandler.upgradeElement(stateButton.get(0));
+		componentHandler.upgradeElement(stateUl.get(0));
+		componentHandler.upgradeElement(stateSelect.get(0));
 	}
-	
-	var roomSelect = $('<div class="card-roomSelect"></div>')
-	.append(roomButton, roomUl);
-	
-	if (shouldRoomBeAdded) {
-		parent.append(roomSelect);
-		componentHandler.upgradeElement(roomButton.get(0));
-		componentHandler.upgradeElement(roomUl.get(0));
-		componentHandler.upgradeElement(roomSelect.get(0));
+
+	function CreateGroupButton(parent) 
+	{
+		var groupmenuId = 'groupMenu';
+		
+		var groupSpan = $('<span id="groupMenuSpan">Группа</span>');
+		
+		var groupButton = $('<button></button>', {
+			id: groupmenuId,
+			'class': 'mdl-button mdl-js-button',
+		})
+		.append(groupSpan);
+		
+		var arrayOfGroupNames = GetGroupNames();
+		var groupText = ['Группа'].concat(arrayOfGroupNames);
+		var groupValues = [''].concat(arrayOfGroupNames);
+		
+		
+		var groupUl = $('<ul></ul>', {
+			'class': 'mdl-menu mdl-menu--bottom-left mdl-js-menu mdl-js-ripple-effect',
+			'for': groupmenuId
+		});
+		
+		var shouldGroupBeAdded = false;
+		var li;
+		
+		for(var i = 0; i < groupValues.length; i++) {		
+			li = $('<li></li>', {
+				'class': 'mdl-menu__item selectLi',
+				datavalue: groupValues[i],
+			})
+			.append(groupText[i]);
+			
+			if (groupValues[i]) {
+				shouldGroupBeAdded = true;
+			}
+			
+			groupUl.append(li);
+		}
+		
+		var groupSelect = $('<div class="card-groupSelect"></div>')
+		.append(groupButton, groupUl);
+		
+		if (shouldGroupBeAdded) {
+			parent.append(groupSelect);
+			componentHandler.upgradeElement(groupButton.get(0));
+			componentHandler.upgradeElement(groupUl.get(0));
+			componentHandler.upgradeElement(groupSelect.get(0));
+		}
 	}
+
+	function CreateRoomButton(parent) 
+	{
+		var roommenuId = 'roomMenu';
+		
+		var roomSpan = $('<span id="roomMenuSpan">Комната</span>');
+		
+		var roomButton = $('<button></button>', {
+			id: roommenuId,
+			'class': 'mdl-button mdl-js-button',
+		})
+		.append(roomSpan);
+		
+		var arrayOfRoomNumbers = GetRoomNumbers();
+		var roomText = ['Комната'].concat(arrayOfRoomNumbers);
+		var roomValues = [''].concat(arrayOfRoomNumbers);
+		
+		
+		var roomUl = $('<ul></ul>', {
+			'class': 'mdl-menu mdl-menu--bottom-left mdl-js-menu mdl-js-ripple-effect',
+			'for': roommenuId
+		});
+		
+		var shouldRoomBeAdded = false;
+		
+		for(var i = 0; i < roomValues.length; i++) {		
+			li = $('<li></li>', {
+				'class': 'mdl-menu__item selectLi',
+				datavalue: roomValues[i],
+			})
+			.append(roomText[i]);
+			
+			if (roomValues[i]) {
+				shouldRoomBeAdded = true;
+			}
+			
+			roomUl.append(li);
+		}
+		
+		var roomSelect = $('<div class="card-roomSelect"></div>')
+		.append(roomButton, roomUl);
+		
+		if (shouldRoomBeAdded) {
+			parent.append(roomSelect);
+			componentHandler.upgradeElement(roomButton.get(0));
+			componentHandler.upgradeElement(roomUl.get(0));
+			componentHandler.upgradeElement(roomSelect.get(0));
+		}
+	}
+
+	function CreateGenderButtons(parent) 
+	{
+		var iconAll = $('<i class="material-icons">wc</i>');	
+		var buttonAll = $('<button></button>', {
+			"id": "card-allpeople",
+			"class": "checked mdl-button mdl-js-button mdl-button--icon mdl-button--accent mdl-js-ripple-effect",
+			type: "button"
+		})
+		/*
+		.css({
+			color: 'rgb(250, 250, 250)',
+			backgroundColor: 'rgb(66, 66, 66)'
+		})*/
+		.append(iconAll);	
+		
+		var tooltipButtonAll = $('<div class="mdl-tooltip" for="card-allpeople">Все сотрудники</div>');
+		
+		var badgeAll = $('<span id="badgeAll" class="genderMenu mdl-badge mdl-badge--no-background mdl-badge--overlap" data-badge="0"></span>').append(buttonAll, tooltipButtonAll);
+		
+		//var iconMan = $('<i class="material-icons">fitness_center</i>');	
+		var iconMan = '♂';	
+		var buttonMan = $('<button></button>', {
+			"id": "card-man",
+			"class": "mdl-button mdl-js-button mdl-button--icon mdl-button--accent mdl-js-ripple-effect",
+			type: "button"
+		})
+		/*
+		.css({
+			color: 'rgb(96, 125, 139)'
+		})*/
+		.append(iconMan);	
+		
+		var tooltipButtonMan = $('<div class="mdl-tooltip" for="card-man">Мужчины</div>');
+		
+		var badgeMan = $('<span id="badgeMan" class="genderMenu mdl-badge mdl-badge--no-background mdl-badge--overlap"  data-badge="0"></span>').append(buttonMan, tooltipButtonMan);
+		
+		//var iconWoman = $('<i class="material-icons">local_florist</i>');	
+		var iconWoman = '♀';
+		var buttonWoman = $('<button></button>', {
+			"id": "card-woman",
+			"class": "mdl-button mdl-js-button mdl-button--icon mdl-button--accent mdl-js-ripple-effect",
+			type: "button"
+		})
+		/*
+		.css({
+			color: 'rgb(255, 171, 64)'
+		})*/
+		.append(iconWoman);		
+		
+		var tooltipButtonWoman = $('<div class="mdl-tooltip" for="card-woman">Женщины</div>');
+		
+		var badgeWoman = $('<span id="badgeWoman" class="genderMenu mdl-badge mdl-badge--no-background mdl-badge--overlap" data-badge="0"></span>').append(buttonWoman, tooltipButtonWoman);
+		
+		//parent.append(buttonAll, buttonMan, buttonWoman);
+		parent.append(badgeAll, badgeMan, badgeWoman);
+		
+		componentHandler.upgradeElement(buttonAll.get(0));
+		componentHandler.upgradeElement(tooltipButtonAll.get(0));
+		componentHandler.upgradeElement(buttonMan.get(0));
+		componentHandler.upgradeElement(tooltipButtonMan.get(0));
+		componentHandler.upgradeElement(buttonWoman.get(0));
+		componentHandler.upgradeElement(tooltipButtonWoman.get(0));
+	}
+
+	function CreateResetButton(parent) 
+	{
+		
+		var resetIcon = $('<i class="material-icons">clear</i>');
+		var resetButton = $('<button></button>', {
+			"id": "card-idReset",
+			"class": "mdl-button mdl-js-button  mdl-button--fab mdl-button--icon mdl-button--accent  mdl-js-ripple-effect",
+			type: "button"
+		}).append(resetIcon);	
+		
+		var tooltipResetButton = $('<div class="mdl-tooltip" for="card-idReset">Сбросить<br>фильтры</div>');
+		
+		parent.append(resetButton, tooltipResetButton)
+		componentHandler.upgradeElement(resetButton.get(0));
+		componentHandler.upgradeElement(tooltipResetButton.get(0));
+		
+		resetButton.hide();	
+	}
+
 }
 
-function CreateResetButton(parent) 
-{
-	
-	var resetIcon = $('<i class="material-icons">clear</i>');
-	var resetButton = $('<button></button>', {
-		"id": "card-idReset",
-		"class": "mdl-button mdl-js-button  mdl-button--fab mdl-button--icon mdl-button--accent  mdl-js-ripple-effect",
+function CreateEmailButton(parent) 
+{	
+	var emailIcon = $('<i class="material-icons">email</i>');
+	var emailButton = $('<button></button>', {
+		"id": "card-email",
+		"class": "mdl-button mdl-js-button mdl-button--icon mdl-button--accent mdl-js-ripple-effect",
 		type: "button"
-	}).append(resetIcon);	
+	}).append(emailIcon);	
 	
-	var tooltipResetButton = $('<div class="mdl-tooltip" for="card-idReset">Сбросить<br>фильтры</div>');
+	var href = 'mailto:'
 	
-	parent.append(resetButton, tooltipResetButton)
-	componentHandler.upgradeElement(resetButton.get(0));
-	componentHandler.upgradeElement(tooltipResetButton.get(0));
+	$('div.card-square').each(
+		function() {
+			var self = $(this);
+			href += self.find('span.email').text() + ';';
+		}
+	);
 	
-	resetButton.hide();	
+	
+	var emailLink = $('<a></a>', {
+		href: href
+	})
+	.css({
+		marginLeft: '8px'
+	})
+	.append(emailButton);	
+	
+	var tooltipEmailButton = $('<div class="mdl-tooltip" for="card-email">Отправить письмо <br>выбранным людям</div>');
+	
+	parent.append(emailLink, tooltipEmailButton)
+	componentHandler.upgradeElement(emailButton.get(0));
+	componentHandler.upgradeElement(tooltipEmailButton.get(0));
 }
 
-function CreateGenderButtons(parent) 
-{
-	var iconAll = $('<i class="material-icons">wc</i>');	
-	var buttonAll = $('<button></button>', {
-		"id": "card-allpeople",
-		"class": "checked mdl-button mdl-js-button mdl-button--icon mdl-button--accent mdl-js-ripple-effect",
-		type: "button"
-	})
-	/*
-	.css({
-		color: 'rgb(250, 250, 250)',
-		backgroundColor: 'rgb(66, 66, 66)'
-	})*/
-	.append(iconAll);	
-	
-	var tooltipButtonAll = $('<div class="mdl-tooltip" for="card-allpeople">Все сотрудники</div>');
-	
-	var badgeAll = $('<span id="badgeAll" class="genderMenu mdl-badge mdl-badge--no-background mdl-badge--overlap" data-badge="0"></span>').append(buttonAll, tooltipButtonAll);
-	
-	//var iconMan = $('<i class="material-icons">fitness_center</i>');	
-	var iconMan = '♂';	
-	var buttonMan = $('<button></button>', {
-		"id": "card-man",
-		"class": "mdl-button mdl-js-button mdl-button--icon mdl-button--accent mdl-js-ripple-effect",
-		type: "button"
-	})
-	/*
-	.css({
-		color: 'rgb(96, 125, 139)'
-	})*/
-	.append(iconMan);	
-	
-	var tooltipButtonMan = $('<div class="mdl-tooltip" for="card-man">Мужчины</div>');
-	
-	var badgeMan = $('<span id="badgeMan" class="genderMenu mdl-badge mdl-badge--no-background mdl-badge--overlap"  data-badge="0"></span>').append(buttonMan, tooltipButtonMan);
-	
-	//var iconWoman = $('<i class="material-icons">local_florist</i>');	
-	var iconWoman = '♀';
-	var buttonWoman = $('<button></button>', {
-		"id": "card-woman",
-		"class": "mdl-button mdl-js-button mdl-button--icon mdl-button--accent mdl-js-ripple-effect",
-		type: "button"
-	})
-	/*
-	.css({
-		color: 'rgb(255, 171, 64)'
-	})*/
-	.append(iconWoman);		
-	
-	var tooltipButtonWoman = $('<div class="mdl-tooltip" for="card-woman">Женщины</div>');
-	
-	var badgeWoman = $('<span id="badgeWoman" class="genderMenu mdl-badge mdl-badge--no-background mdl-badge--overlap" data-badge="0"></span>').append(buttonWoman, tooltipButtonWoman);
-	
-	//parent.append(buttonAll, buttonMan, buttonWoman);
-	parent.append(badgeAll, badgeMan, badgeWoman);
-	
-	componentHandler.upgradeElement(buttonAll.get(0));
-	componentHandler.upgradeElement(tooltipButtonAll.get(0));
-	componentHandler.upgradeElement(buttonMan.get(0));
-	componentHandler.upgradeElement(tooltipButtonMan.get(0));
-	componentHandler.upgradeElement(buttonWoman.get(0));
-	componentHandler.upgradeElement(tooltipButtonWoman.get(0));
-}
 
 function FilterPeople(inputText)
 {
@@ -1859,6 +1959,32 @@ function FixDownloadedDataForGender(data)
 	return data.replace(/(\/WebResource|images|orphus|logo)+/g, "http://morpher.ru/$1").replace('IMNRC', 'String.prototype.toLowerCase');
 }
 
+function SetEmailButtonLink() {
+	$('button#card-email').parent().attr('href', CreateEmailLink());
+}
+
+function CreateEmailLink() {
+	var href = 'mailto:';
+	
+	if ($('table.full-size:visible').length > 0) {
+		$('table.full-size tbody tr:visible').each(
+			function() {
+				var self = $(this);
+				href += self.find('td.indicator.mail a').attr('href').replace('mailto:', '') + ';';
+			}
+		);
+	} else {	
+		$('div.card-square:visible').each(
+			function() {
+				var self = $(this);
+				href += self.find('span.email').text() + ';';
+			}
+		);
+	}
+	
+	return href;
+}
+
 
 
 $(document).ready
@@ -1871,6 +1997,7 @@ $(document).ready
 		CreateSelectForGroups();		
 		CreateSelectOnWorkState();
 		CreateSelectOnRoom();
+		CreateSelectOnGender();
 		
 		PrepareEmployeeColumnForSort();
 		PrepareWorkgroupColumnForSort();		
@@ -1901,19 +2028,35 @@ $(document).ready
 		ResizeTableHeader();
 		SetTableHeightForOffice();	
 		
+		CreateEmailButton($('main span.mdl-layout-title'));
 		AddToggleButtonTableAndCards();
 		SetWorkerCards();
 		AddFilterMenuForCards();		
 		
 		SetProfileImages();
 		SetAllPeopleGender();
+		SetEmailButtonLink();
 		
-		$( "#searchInput" ).on("propertychange input change keyup paste click", 
+		
+		
+		/******************************
+			Search inputs
+		******************************/
+		
+		$( "#searchInput" ).on("input", 
 			function() 
-			{			
-				$("#workgroupSelect, #workStateSelect, #roomSelect").val("");
+			{					
+				$("#workgroupSelect, #workStateSelect, #roomSelect, #genderSelect").val("");
+				$('#workstateMenu').attr('datavalue', '')
+				$('#stateMenuSpan').text('Статус')
+				$('#groupMenuSpan').text('Группа');
+				$('#roomMenuSpan').text('Комната');
+				$('#card-man, #card-woman').removeClass('checked');			
+				$('#card-allpeople').addClass('checked');
+				
 				var inputText = escapeHtml($(this).val());
-				$('#card-searchInput').val(inputText);				
+				$('#card-searchInput').val(inputText);									
+				
 				FilterPeople(inputText);
 				
 				if (inputText != '')
@@ -1929,66 +2072,140 @@ $(document).ready
 				
 				ResizeTableHeader();
 				SetTableHeightForOffice();			
-				CheckResetButton();						
+				CheckResetButton();	
+				SetEmailButtonLink();
+			}
+		);		
+		
+		$("#card-searchInput").on("input", 
+			function() 
+			{			
+				$("#workgroupSelect, #workStateSelect, #roomSelect, #genderSelect").val("");
+				$('#workstateMenu').attr('datavalue', '')
+				$('#stateMenuSpan').text('Статус')
+				$('#groupMenuSpan').text('Группа');
+				$('#roomMenuSpan').text('Комната');
+				var inputText = escapeHtml($(this).val());
+				$('#searchInput').val(inputText);
+				$('#card-man, #card-woman').removeClass('checked');			
+				$('#card-allpeople').addClass('checked');
+				
+				FilterPeople(inputText);
+				
+				if (inputText != '')
+				{
+					$(this).parent().addClass('is-dirty');
+					$('#searchInput').parent().addClass('is-dirty');
+				}
+				else
+				{
+					$(this).parent().removeClass('is-dirty');
+					$('#searchInput').parent().removeClass('is-dirty');
+				}
+				
+				CheckResetButton();		
+				SetEmailButtonLink();						
 			}
 		);
 		
+		/******************************
+			Filters logic
+		******************************/
 		
-		$("#workgroupSelect, #workStateSelect, #roomSelect").change(
+		$("#workgroupSelect, #workStateSelect, #roomSelect, #genderSelect").change(
 			function ()
 			{	
 				var datavalueGroup = $("select#workgroupSelect option").filter(":selected").text();
 				$('#groupMenuSpan').text(datavalueGroup);
 				
-				var datavalueState = $("select#workStateSelect option").filter(":selected").val();
+				var selectedOptionState = $("select#workStateSelect option").filter(":selected");
+				var datavalueState = selectedOptionState.val();
+				var textState = selectedOptionState.text();
 				$('#workstateMenu').attr('datavalue', datavalueState);
+				$('#stateMenuSpan').text(textState);
 							
 				var datavalueRoom = $("select#roomSelect option").filter(":selected").text();
 				$('#roomMenuSpan').text(datavalueRoom);
+				
+				var datavalueGender = $("select#genderSelect option").filter(":selected").val();
+				datavalueGender = datavalueGender ? datavalueGender  : 'allpeople';
+				$('#card-allpeople, #card-man, #card-woman').removeClass('checked');			
+				$('#card-' + datavalueGender).addClass('checked');
 				
 				SetFilters();
 				ResizeTableHeader();
 				SetTableHeightForOffice();
 				CheckResetButton();
+				SetEmailButtonLink();
 			}
-		);		
+		);				
 		
+		$('.card-stateSelect li.selectLi').click(
+			function () {
+				var datavalue = $(this).attr('datavalue');
+				$('#workstateMenu').attr('datavalue', datavalue);
+				$('#stateMenuSpan').text($(this).find('.stateTextSpan').text());
+				
+				$("select#workStateSelect").val(datavalue);
+				
+				
+				SetFilters();
+				ResizeTableHeader();
+				SetTableHeightForOffice();
+				CheckResetButton();	
+				SetEmailButtonLink();		
+			}
+		);
 		
-		$('.card-stateSelect li.selectLi').click(function () {
-			var datavalue = $(this).attr('datavalue');
-			$("select#workStateSelect").val(datavalue);
-			$('#workstateMenu').attr('datavalue', datavalue);
+		$('.card-groupSelect li.selectLi').click(
+			function () {
+				var datavalue = $(this).attr('datavalue');
+				$('#groupMenuSpan').text($(this).text());
+				
+				$("select#workgroupSelect").val(datavalue);
+				
+				SetFilters();
+				ResizeTableHeader();
+				SetTableHeightForOffice();
+				CheckResetButton();	
+				SetEmailButtonLink();			
+			}
+		);
+		
+		$('.card-roomSelect li.selectLi').click(
+			function () {
+				var datavalue = $(this).attr('datavalue');
+				$('#roomMenuSpan').text($(this).text());				
+				
+				$("select#roomSelect").val(datavalue);
+				
+				SetFilters();
+				ResizeTableHeader();
+				SetTableHeightForOffice();
+				CheckResetButton();
+				SetEmailButtonLink();		
+			}
+		);
+		
+		$('#card-allpeople, #card-man, #card-woman').click(
+			function(){
+				$('#card-allpeople, #card-man, #card-woman').removeClass('checked');			
+				$(this).addClass('checked');
+				
+				var gender = $(this).attr('id').replace('card-', '').replace('allpeople', '');
+				$("select#genderSelect").val(gender);		
 			
-			$('#stateMenuSpan').text($(this).find('.stateTextSpan').text());
-			
-			SetFilters();
-			ResizeTableHeader();
-			SetTableHeightForOffice();
-			CheckResetButton();			
-		});
+				SetFilters();
+				ResizeTableHeader();
+				SetTableHeightForOffice();
+				CheckResetButton();				
+				SetEmailButtonLink();		
+			}
+		);
 		
-		$('.card-groupSelect li.selectLi').click(function () {
-			var datavalue = $(this).attr('datavalue');
-			$("select#workgroupSelect").val(datavalue);
-			$('#groupMenuSpan').text($(this).text());
-			
-			SetFilters();
-			ResizeTableHeader();
-			SetTableHeightForOffice();
-			CheckResetButton();			
-		});
-		
-		$('.card-roomSelect li.selectLi').click(function () {
-			var datavalue = $(this).attr('datavalue');
-			$("select#roomSelect").val(datavalue);
-			$('#roomMenuSpan').text($(this).text());
-			
-			SetFilters();
-			ResizeTableHeader();
-			SetTableHeightForOffice();
-			CheckResetButton();			
-		});
-		
+		/******************************
+			Sorting
+		******************************/
 		
 		$(".arrowDiv").click(		
 			function ()
@@ -2099,6 +2316,9 @@ $(document).ready
 			}
 		);
 		
+		/******************************
+			Reset buttons
+		******************************/
 		
 		$("button#idReset").on("click", 
 			function()
@@ -2106,11 +2326,27 @@ $(document).ready
 				ResetTableParametres();			
 				ResizeTableHeader();
 				SetTableHeightForOffice();
+				SetEmailButtonLink();		
 				
 				$(this).fadeOut("fast");
 				$("button#card-idReset").fadeOut("fast");
 			}
 		);
+		
+		$("button#card-idReset").on("click", 
+			function()
+			{			
+				ResetTableParametres();	
+				SetEmailButtonLink();			
+				
+				$(this).fadeOut("fast");
+				$("button#idReset").fadeOut("fast");
+			}
+		);
+		
+		/******************************
+			Home buttons
+		******************************/
 		
 		$("#roomSelectButton").click(
 			function()
@@ -2120,6 +2356,7 @@ $(document).ready
 				ResizeTableHeader();
 				SetTableHeightForOffice();
 				CheckResetButton();
+				SetEmailButtonLink();		
 			}
 		);
 		
@@ -2131,17 +2368,33 @@ $(document).ready
 				ResizeTableHeader();
 				SetTableHeightForOffice();
 				CheckResetButton();
+				SetEmailButtonLink();		
+			}
+		);		
+		
+		$('#card-roomSelectButton').click(
+			function()
+			{
+				ResetTableParametres();
+				SelectHomeRoom();
+				CheckResetButton();
+				SetEmailButtonLink();		
 			}
 		);
-
-		// Adjust the width of thead cells when window resizes
-		$(window).resize(
-			function() 
+		
+		$('#card-groupSelectButton').click(
+			function()
 			{
-				ResizeTableHeader();
-				SetTableHeightForOffice();
+				ResetTableParametres();
+				SelectHomeGroup();
+				CheckResetButton();
+				SetEmailButtonLink();		
 			}
-		).resize(); // Trigger resize handler
+		);
+		
+		/******************************
+			Mode toggling
+		******************************/
 		
 		$('#table-button').click(
 			function() 
@@ -2160,11 +2413,6 @@ $(document).ready
 			}
 		);
 		
-		/******************************
-			ACTIONS WITH CARDS
-		******************************/
-		
-		
 		$('#card-button').click(
 			function() 
 			{
@@ -2179,77 +2427,18 @@ $(document).ready
 			}
 		);
 		
-		
-		$('#card-groupSelectButton').click(
-			function()
-			{
-				ResetTableParametres();
-				SelectHomeGroup();
-				CheckResetButton();
-			}
-		);
-		
-		$("button#card-idReset").on("click", 
-			function()
-			{			
-				ResetTableParametres();		
-				
-				$(this).fadeOut("fast");
-				$("button#idReset").fadeOut("fast");
-			}
-		);
-		
-		$("#card-searchInput").on("propertychange input change keyup paste click", 
+		/******************************
+			Adjust the width of thead 
+			cells when window resizes
+		******************************/
+
+		$(window).resize(
 			function() 
-			{			
-				$("#workgroupSelect, #workStateSelect, #roomSelect").val("");
-				var inputText = escapeHtml($(this).val());
-				$('#searchInput').val(inputText);
-				FilterPeople(inputText);
-				
-				if (inputText != '')
-				{
-					$(this).parent().addClass('is-dirty');
-					$('#searchInput').parent().addClass('is-dirty');
-				}
-				else
-				{
-					$(this).parent().removeClass('is-dirty');
-					$('#searchInput').parent().removeClass('is-dirty');
-				}
-				
-				CheckResetButton();						
+			{
+				ResizeTableHeader();
+				SetTableHeightForOffice();
 			}
-		);
-		
-		
-		$('#card-allpeople, #card-man, #card-woman').click(function(){
-			
-			ResetTableParametres();
-			ResizeTableHeader();
-			SetTableHeightForOffice();
-			CheckResetButton();
-			
-			
-			$('#card-allpeople, #card-man, #card-woman').removeClass('checked');			
-			$(this).addClass('checked');
-			
-			var id = $(this).attr('id').replace('card-', '').replace('allpeople', '');
-			if (id) {
-				$('div.card-square').each(
-					function() {
-						if ($(this).find('.' + id).length > 0) {
-							$(this).show();
-						} else {
-							$(this).hide();					
-						}
-					}
-				);				
-			} else {
-				$('div.card-square').show();
-			}
-			
-			
-		});
+		).resize(); /* Trigger resize handler */
+				
 	}		
 );
