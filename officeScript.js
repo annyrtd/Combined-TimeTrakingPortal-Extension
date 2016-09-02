@@ -708,22 +708,6 @@ function SetFilters()
 		);
 	}	
 }
-	
-	/*function FilterGender(gender) {
-		if (gender) {
-			$('div.card-square').each(
-				function() {
-					if ($(this).find('.' + gender).length > 0) {
-						$(this).show();
-					} else {
-						$(this).hide();					
-					}
-				}
-			);				
-		} else {
-			$('div.card-square').show();
-		}	
-	}*/
 
 
 //Выбор "домашних" групп и комнат
@@ -2121,6 +2105,7 @@ $(document).ready
 				var selectedOptionState = $("select#workStateSelect option").filter(":selected");
 				var datavalueState = selectedOptionState.val();
 				var textState = selectedOptionState.text();
+				textState = textState ? textState : 'Статус';
 				$('#workstateMenu').attr('datavalue', datavalueState);
 				$('#stateMenuSpan').text(textState);
 							
