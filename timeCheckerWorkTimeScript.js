@@ -225,6 +225,7 @@ function SetUp_StartTime(row, startTime) {
 	if (dayId == GetCurrentDayId()) {
 		//row.find('[idtype=startTime]').text(startTime);
 		row.addClass('inProgress');
+		row.find('[idtype="inputTime"]').prop('disabled', true);
 		row.find('[idtype=buttonTimeStart]').hide();
 		row.find('[idtype=buttonTimeStop]').show();
 		
@@ -1485,11 +1486,18 @@ $(document).ready ( function() {
 
 			var mainRow = $('#' + prefix + dayId + '_' + 'trTimeChecker' + taskIndex);
 
+			
 			var timerId = currentRow.attr('timerid');
 			if (timerId) {
 				timers.getTimer(+timerId).stop();
 				delete timers.getTimers()[+timerId];
 			}
+			
+			currentRow.removeClass('inProgress');
+			currentRow.removeAttr('timerid');
+			currentRow.find('[idtype="buttonTimeStart"]').show();
+			currentRow.find('[idtype="buttonTimeStop"]').hide();
+			
 			
 			currentRow.find('[idtype="inputComment"], [idtype="inputTime"]').val("");
 			currentRow.find('[idtype="inputComment"], [idtype="inputTime"]').val("");
