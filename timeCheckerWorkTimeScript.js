@@ -1612,7 +1612,7 @@ $(document).ready ( function() {
 			var currentTime = input.val();	
 			
 			
-			/*if (!regExp.test(currentTime)) {
+			if (!regExp.test(currentTime)) {
 				currentTime = ToTime(currentTime);
 				if (!regExp.test(currentTime)) {
 					currentTime = '';
@@ -1629,9 +1629,9 @@ $(document).ready ( function() {
 			input.val(workedTime);
 			localStorage[input.attr('id')] = workedTime;
 			
-			*/
 			
-			localStorage[input.attr('id')] = currentTime;
+			
+			//localStorage[input.attr('id')] = currentTime;
 
 			$(this).hide();
 			var startId = '#' + $(this).attr('id').replace('Stop', 'Start');
