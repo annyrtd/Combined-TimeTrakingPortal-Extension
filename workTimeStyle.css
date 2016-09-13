@@ -134,7 +134,7 @@ td.monthday.number, th.monthday.number
 
 th.range.text, td.range.text
 {
-	width: 120px !important;
+	width: 130px !important;
 }
 
 td.time, th.time
@@ -145,7 +145,7 @@ td.time, th.time
 
 td.text.note, th.text.note
 {
-	width: 80px !important;
+	width: 100px !important;
     
 }
 

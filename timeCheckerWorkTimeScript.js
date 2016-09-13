@@ -1,9 +1,25 @@
-﻿function CreateCurrentDayButton() {
+﻿var timers = new TimerCollection();
+
+function CreateCurrentDayButton() {
 	
-	var button = $('<button></button>', {
+	var buttonAllDays = $('<button></button>', {
+		'class': 'mdl-button mdl-js-button mdl-js-ripple-effect',
+		id: 'allDaysToggle'
+	})
+	.css({
+		marginRight: '16px'
+	})
+	.append('Весь месяц');
+	
+	var buttonToday = $('<button></button>', {
 		'class': 'mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent',
 		id: 'currentDayToggle'
-	}).append('Сегодня');
+	})	
+	.css({
+		marginRight: '16px'
+	})
+	.append('Сегодня');
+	
 	
 	$('main span.mdl-layout-title')
 	.css({
@@ -12,9 +28,10 @@
 		minHeight: '65px'
 	})
 	.append('&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;')
-	.append(button);
+	.append(buttonAllDays, buttonToday);
 	
-	componentHandler.upgradeElement(button.get(0));
+	componentHandler.upgradeElement(buttonAllDays.get(0));
+	componentHandler.upgradeElement(buttonToday.get(0));
 }
 
 function SetUpInitialState() {
@@ -206,10 +223,24 @@ function SetUp_StartTime(row, startTime) {
 	var dayId = row.attr('dayid');
 
 	if (dayId == GetCurrentDayId()) {
-		row.find('[idtype=startTime]').text(startTime);
+		//row.find('[idtype=startTime]').text(startTime);
 		row.addClass('inProgress');
 		row.find('[idtype=buttonTimeStart]').hide();
 		row.find('[idtype=buttonTimeStop]').show();
+		
+		
+		var currentDate = new Date();
+		var time = currentDate.getHours() + ":" + currentDate.getMinutes();
+		row.find('[idtype=startTime]').text(time);
+		var someTime = row.find('[idtype="inputTime"]').val();
+		
+		row.find('[idtype="inputTime"]').val(TCH_SumOfTime(someTime, TCH_DifferenceOfTime(time, startTime)));
+		//row.find('[idtype="inputTime"]').
+		
+		var timer = timers.createTimer();
+		timer.bindTo(row.find('[idtype="inputTime"]').get(0));
+		row.attr('timerid', timer.id);
+		timer.start();
 	} else {
 		var time = GetTimeLeftForTheTask(dayId, startTime);
 		var inputTime = row.find('[idtype=inputTime]');
@@ -596,7 +627,7 @@ function CreateHeaderRow(dayId, prefix) {
 	.css({
 		paddingRight: '16px'
 	})
-	.append('Task');
+	.append('Задача');
 	
 	var iconCreateTemplate = $('<i class="material-icons">list</i>');
 	var buttonIdCreateTemplate = prefix + dayId + '_' + 'buttonCreateTemplate';	
@@ -650,7 +681,7 @@ function CreateHeaderRow(dayId, prefix) {
 	.append(buttonUploadTemplate, tooltipUploadTemplate);
 
 	var divTitleTime = $('<div></div>')
-	.append('Spent time <br>(hh:mm)');
+	.append('Потраченное время <br>чч:мм, ч.мм');
 
 	var tdTime = $('<td></td>', {
 	})
@@ -661,15 +692,15 @@ function CreateHeaderRow(dayId, prefix) {
 
 	var tdComment = $('<td></td>', {
 		colspan: 2
-	}).append('Subtask/comment');
+	}).append('Подзадача/комментарий');
 
 	var tdDeleteSubtask = $('<td></td>', {
 		'class': 'time'
-	}).append('Delete<br>subtask');
+	}).append('Удалить<br>подзадачу');
 
 	var tdDeleteTask = $('<td></td>', {
 		'class': 'time'
-	}).append('Delete<br>task');
+	}).append('Удалить<br>задачу');
 
 	componentHandler.upgradeElement(buttonCreateTemplate.get(0));
 	componentHandler.upgradeElement(buttonSaveTemplate.get(0));
@@ -692,7 +723,7 @@ function CreateOtherRow(dayId, prefix) {
 	.css({
 		width: '220px'
 	})
-	.append('Other');
+	.append('Оставшееся время');
 
 	var tdTask = $('<td></td>', {
 		colspan: 2
@@ -716,7 +747,7 @@ function CreateOtherRow(dayId, prefix) {
 	var tdComment = $('<td></td>', {
 		colspan: 4
 	})
-	.append('Time for this day left');
+	.append('');
 
 	return $('<tr></tr>', {
 		'class': 'other',
@@ -789,6 +820,12 @@ function CheckRowsNumber(lastRowIndex, dayId) {
 			if (!CheckIfAnyInputHasVal(dayId, prefix, i)) {
 				ClearLocalStorageInputValueForRow(currentRow);
 				localStorage.removeItem(prefix + dayId + '_' + i);
+				
+				var timerId = currentRow.attr('timerid');
+				if(timerId) {
+					timers.getTimer(+timerId).stop();
+					delete timers.getTimers()[+timerId];
+				}
 				
 				$('[dayid=' + dayId + '][taskindex=' + i + ']').remove();
 			}
@@ -936,20 +973,60 @@ function ShiftSubtask(taskIndex, dayId, prefix) {
 
 		var currentRow = $('#' + prefix + dayId + '_' + 'trTimeChecker' + taskIndex + '-' + i);
 		var previousSubtaskTds = previousRow.find('td.subtaskTd');
-		currentRow.find('td.subtaskTd').each(function(index) {
-			var previousInput = $(previousSubtaskTds[index]).children('input');
-			var currentInput = $(this).children('input');
-			var previousId = previousInput.attr('id');
-			var currentId = currentInput.attr('id');
+		currentRow.find('td.subtaskTd').each(function(index) {			
+			var previousItem, currentItem;
+			
+			var isInput = $(this).children().first().is('input');
+			var isLabel = $(this).children().first().is('label');
+			
+			if(isInput || isLabel) {
+				if (isInput) {
+					previousItem = $(previousSubtaskTds[index]).children('input');
+					currentItem = $(this).children('input');
+					previousItem.val(currentItem.val());
+				}
+				if (isLabel) {
+					previousItem = $(previousSubtaskTds[index]).children('label');
+					currentItem = $(this).children('label');
+					var text = currentItem.text();
+					previousItem.text(text);
+					if (text) {
+						var currentParent = currentItem.parent().parent();
+						var previousParent = previousItem.parent().parent();
+						
+						currentParent.removeClass('inProgress');
+						currentParent.find('[idtype="buttonTimeStart"]').show();
+						currentParent.find('[idtype="buttonTimeStop"]').hide();
+						var timerId = currentParent.attr('timerid');
+						currentParent.removeAttr('timerid');
+						
+						previousParent.addClass('inProgress');						
+						previousParent.find('[idtype="buttonTimeStart"]').hide();
+						previousParent.find('[idtype="buttonTimeStop"]').show();		
+						previousParent.attr('timerid', timerId);
+						timers.getTimer(+timerId).bindTo(previousParent.find('[idtype=inputTime]'));						
+					}
+				}
+				
+				var previousId = previousItem.attr('id');
+				var currentId = currentItem.attr('id');
 
-			previousInput.val(currentInput.val());
-
-			if (localStorage[currentId] && previousId != currentId) {
-				localStorage[previousId] = localStorage[currentId];
-				localStorage.removeItem(currentId);
-			} else {
-				localStorage.removeItem(previousId);
+				if (localStorage[currentId] && previousId != currentId) {
+					localStorage[previousId] = localStorage[currentId];
+					localStorage.removeItem(currentId);
+				} else {
+					localStorage.removeItem(previousId);
+				}
 			}
+			
+			/*
+			if ($(this).children().first().is('label')) {
+				var previousLabel = $(previousSubtaskTds[index]).children('label');
+				var currentLabel = $(this).children('label');
+				var previousId = previousLabel.attr('id');
+				var currentId = currentLabel.attr('id');
+			}
+			*/
 
 			//$(previousSubtaskTds[index]).children('input').val($(this).children('input').val());
 		});
@@ -957,6 +1034,7 @@ function ShiftSubtask(taskIndex, dayId, prefix) {
 		previousRow = currentRow;
 	}
 
+	ClearLocalStorageInputValueForRow(currentRow);
 	currentRow.remove();
 }
 
@@ -1133,6 +1211,105 @@ function DeleteMenu(dayId) {
 	$('.templateMenuLabel.' + dayId).remove();
 }
 
+
+function TimerCollection() {
+  
+  this.timers = [];
+  
+}
+
+TimerCollection.prototype.getTimers = function() { return this.timers; };
+TimerCollection.prototype.getTimer = function(index) { return this.timers[index]; };
+
+TimerCollection.prototype.createTimer = function() { 
+  
+  var timer = new Timer(this.timers.length);
+
+  this.timers.push(timer); 
+  
+  return timer;
+};
+
+
+function Timer(id) {
+  this.id = id;
+  
+  this.seconds = 0;
+  
+  this.timeout = null;
+  
+  this.ticks = false;
+  
+  this.tickCallback = function() { console.log('Timer ', this.id, ' tick'); }
+}
+
+function ToSeconds(time) {
+	var regExp = /^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$/;
+	
+	if (!(regExp.test(time)))
+	{
+		return 0;
+	}
+  
+	var a = time.split(':'); // split it at the colons
+  
+	// minutes are worth 60 seconds. Hours are worth 60 minutes.
+	var seconds = (+a[0]) * 60 * 60 + (+a[1]) * 60; 
+  
+	return seconds;
+}
+
+Timer.prototype.start = function() {
+  
+  var timer = this;
+  var startingTime = ToSeconds(timer.binding.value);
+  if(!startingTime) {
+	  timer.binding.value = '00:00';
+  }
+  timer.ticks = true;
+  var currentDate = new Date();
+  timer.seconds = (parseInt(startingTime) || 0) + 1 + currentDate.getSeconds();
+  timer.timeout = setInterval(function() { 
+    timer.seconds += 1; 
+    var hours   = Math.floor(timer.seconds / 3600);
+    var minutes = Math.floor((timer.seconds - (hours * 3600)) / 60);
+
+    if (hours   < 10) {hours   = "0"+hours;}
+    if (minutes < 10) {minutes = "0"+minutes;}    
+
+    //console.log(timer.seconds);
+	
+	var newValue = hours + ':' + minutes
+	if (timer.binding.value != newValue) {
+		timer.binding.value = newValue;
+	}
+  }, 1000);
+}
+
+Timer.prototype.stop = function() {
+  this.ticks = false;
+  clearInterval(this.timeout);
+}
+
+Timer.prototype.onTick = function(callback) {
+  this.tickCallback = callback;
+}
+
+Timer.prototype.toggle = function() {
+  
+  if (this.ticks) {
+    this.stop();
+  } else {
+    this.start();
+  }
+}
+
+Timer.prototype.bindTo = function(el) {
+  this.binding = el;
+}
+
+
+
 $(document).ready ( function() {
 	var prefix = GetCurrentMonthAndYearPrefix();
 	
@@ -1182,6 +1359,7 @@ $(document).ready ( function() {
 			var regExp = /^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$/;
 			var value = $(this).val();
 			var id = $(this).attr('id');
+			var idType = $(this).attr('idtype');
 
 
 			if($(this).attr('idtype') == 'inputTime') {
@@ -1212,6 +1390,10 @@ $(document).ready ( function() {
 			} else {
 				localStorage.removeItem(prefix + dayId);
 			}
+			
+			if(!$(this).is(':visible')) {
+				$('.trTimeChecker.task[dayid="' + dayId + '"]').last().find('[idtype="' + idType + '"]').focus();
+			}
 
 			$('#' + prefix + dayId + '_other_labelTime').text(GetTimeForOtherLabel(dayId));
 			SetTableHeightForTime();
@@ -1225,9 +1407,21 @@ $(document).ready ( function() {
 			var dayId = mainTr.attr('dayid');
 			var idType = mainTr.attr('idtype');
 			var taskIndex = mainTr.attr('taskindex');
+			
+			
+			var timerId = mainTr.attr('timerid');
+			if (timerId) {
+				timers.getTimer(+timerId).stop();
+				delete timers.getTimers()[+timerId];
+			}
 
 			$('.subtask[dayid=' + dayId + '][idtype=' + idType + '][taskindex=' + taskIndex + ']').each(function() {
 			//$('.subtask[id^="' + dayId + '_' + idType + taskIndex + '"]').each(function() {
+				timerId = $(this).attr('timerid');
+				if (timerId) {
+					timers.getTimer(+timerId).stop();
+					delete timers.getTimers()[+timerId];
+				}
 				ClearLocalStorageInputValueForRow($(this));
 			}).remove();
 
@@ -1235,7 +1429,7 @@ $(document).ready ( function() {
 			mainTr.children('td').last().attr('rowspan', 1);
 			mainTr.attr('subtaskcount', 1);
 
-			ClearLocalStorageInputValueForRow(mainTr);
+			ClearLocalStorageInputValueForRow(mainTr, true);
 			localStorage.removeItem(prefix + dayId + '_' + taskIndex);
 
 			if (rowsIndex[prefix + dayId] == taskIndex) {
@@ -1291,9 +1485,15 @@ $(document).ready ( function() {
 
 			var mainRow = $('#' + prefix + dayId + '_' + 'trTimeChecker' + taskIndex);
 
+			var timerId = currentRow.attr('timerid');
+			if (timerId) {
+				timers.getTimer(+timerId).stop();
+				delete timers.getTimers()[+timerId];
+			}
+			
 			currentRow.find('[idtype="inputComment"], [idtype="inputTime"]').val("");
 			currentRow.find('[idtype="inputComment"], [idtype="inputTime"]').val("");
-			//ClearLocalStorageInputValueForRow(currentRow);
+			ClearLocalStorageInputValueForRow(currentRow);
 
 			var subtaskCount = +mainRow.attr('subtaskcount');
 
@@ -1338,7 +1538,7 @@ $(document).ready ( function() {
 			SetTableHeightForTime();
 		}
 	);
-
+	
 	$(document).on('click', '[idtype="buttonTimeStart"]',
 		function() {
 			var currentDate = new Date();
@@ -1353,6 +1553,7 @@ $(document).ready ( function() {
 			var dayId = mainRow.attr('dayid');
 			var taskIndex = mainRow.attr('taskindex');
 			var subtaskIndex = mainRow.attr('subtaskindex') ? mainRow.attr('subtaskindex') : 0;
+			var input = mainRow.find('[idtype=inputTime]');
 
 			localStorage[prefix + dayId + '_' + 'startTime' + taskIndex + '-' + subtaskIndex] = time;
 
@@ -1363,12 +1564,26 @@ $(document).ready ( function() {
 
 			rowsIndex[prefix + dayId] = CheckRowsNumber(rowsIndex[prefix + dayId], dayId);
 			rowsIndex[prefix + dayId] = RecountIds(dayId);
+			
 			if (rowsIndex[prefix + dayId]) {
 				localStorage[prefix + dayId] = rowsIndex[prefix + dayId];
 			} else {
 				localStorage.removeItem(prefix + dayId);
 			}
-
+			
+			
+			var timerId = mainRow.attr('timerid');
+			var timer;
+			if (timerId) {
+				timer = timers.getTimer(+timerId);
+			} else {
+				timer = timers.createTimer();
+				timer.bindTo(input.get(0));
+				mainRow.attr('timerid', timer.id);
+			}
+			
+			timer.start();
+			
 			SetTableHeightForTime();
 		}
 	);
@@ -1381,6 +1596,11 @@ $(document).ready ( function() {
 			var mainRow = $(this).parent().parent();
 			var dayId = mainRow.attr('dayid');
 			mainRow.find('[idtype=inputTime]').prop('disabled', false);
+			
+			var timerId = mainRow.attr('timerid');
+			if(timerId) {
+				timers.getTimer(+timerId).stop();
+			}
 
 			var taskIndex = mainRow.attr('taskindex');
 			var subtaskIndex = mainRow.attr('subtaskindex') ? mainRow.attr('subtaskindex') : 0;
@@ -1389,8 +1609,10 @@ $(document).ready ( function() {
 			var startTime = mainRow.find('[idtype=startTime]');
 			
 			var regExp = /^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$/;
-			var currentTime = input.val();		
-			if (!regExp.test(currentTime)) {
+			var currentTime = input.val();	
+			
+			
+			/*if (!regExp.test(currentTime)) {
 				currentTime = ToTime(currentTime);
 				if (!regExp.test(currentTime)) {
 					currentTime = '';
@@ -1404,9 +1626,12 @@ $(document).ready ( function() {
 			} else {
 				workedTime = TCH_DifferenceOfTime(time, startTime.text());
 			}
-			workedTime = ToDecimal(workedTime);
 			input.val(workedTime);
 			localStorage[input.attr('id')] = workedTime;
+			
+			*/
+			
+			localStorage[input.attr('id')] = currentTime;
 
 			$(this).hide();
 			var startId = '#' + $(this).attr('id').replace('Stop', 'Start');
@@ -1424,7 +1649,7 @@ $(document).ready ( function() {
 				localStorage[prefix + dayId] = rowsIndex[prefix + dayId];
 			} else {
 				localStorage.removeItem(prefix + dayId);
-			}
+			}			
 
 			SetTableHeightForTime();
 		}
@@ -1451,25 +1676,31 @@ $(document).ready ( function() {
 	$(document).on('click', '#currentDayToggle',
 		function (){
 			$('button.resetButton').click();
+			$(this).addClass('mdl-button--raised mdl-button--accent');
+			$('#allDaysToggle').removeClass('mdl-button--raised mdl-button--accent');
+			
 			var dayId = GetCurrentDayId();
-			if ($(this).hasClass('mdl-button--accent')) {
-				$(this).removeClass('mdl-button--raised mdl-button--accent');
-
-				$('tr.intervalRow, tr.dayoff, tr[id]').not('.future').not('.trTimeChecker').not('.other').not('.header').show();
-				$('.trTimeChecker').hide();
-				$('.other').hide();
-				$('.header').hide();
-				$('#' + dayId).first().removeClass('timesheetOpened');
-
-			} else {
-				$(this).addClass('mdl-button--raised mdl-button--accent');
-
-				$('tr.intervalRow, tr[id], tr.dayoff').hide();
-				$('#' + dayId + ', [dayid=' + dayId + ']').show();
-				$('tr[id]:not(.future):not(.trTimeChecker):not(.other):not(.header)').removeClass('timesheetOpened');
-				$('#' + dayId).first().addClass('timesheetOpened');
-
-			}
+			$('tr.intervalRow, tr[id], tr.dayoff').hide();
+			$('#' + dayId + ', [dayid=' + dayId + ']').show();
+			$('tr[id]:not(.future):not(.trTimeChecker):not(.other):not(.header)').removeClass('timesheetOpened');
+			$('#' + dayId).first().addClass('timesheetOpened');
+	
+			SetTableHeightForTime();
+		}
+	);
+	
+	$(document).on('click', '#allDaysToggle',
+		function (){
+			$('button.resetButton').click();
+			$(this).addClass('mdl-button--raised mdl-button--accent');
+			$('#currentDayToggle').removeClass('mdl-button--raised mdl-button--accent');
+			
+			var dayId = GetCurrentDayId();
+			$('tr.intervalRow, tr.dayoff, tr[id]').not('.future').not('.trTimeChecker').not('.other').not('.header').show();
+			$('.trTimeChecker').hide();
+			$('.other').hide();
+			$('.header').hide();
+			$('#' + dayId).first().removeClass('timesheetOpened');
 			
 			SetTableHeightForTime();
 		}
@@ -1487,18 +1718,12 @@ $(document).ready ( function() {
 		}
 	);
 	
-	document.querySelectorAll('[idtype="buttonToProperView"]').forEach(function(item) {
-		item.onclick = function(e) {
-			var currentRow = $(this).parent().parent();
-			var dayId = currentRow.attr('dayid');
-			RoundTimeForDay(dayId);
-			$('#' + prefix + dayId + '_other_labelTime').text(GetTimeForOtherLabel(dayId));
-		};
-	});
-	
 	document.querySelectorAll('[idtype="buttonCreateTemplate"]').forEach(function(item) {
 		item.onclick = function(e) {
+			$('table.full-size input[type=text]').prop('disabled', true);
+			
 			var currentRow = $(this).parent().parent();
+			currentRow.find('[idtype="buttonUploadTemplate"]').hide();
 			var dayId = currentRow.attr('dayid');			
 			CreateTemplateMenu(dayId);
 
@@ -1510,14 +1735,17 @@ $(document).ready ( function() {
 	
 	document.querySelectorAll('[idtype="buttonSaveTemplate"]').forEach(function(item) {
 		item.onclick = function(e) {
+			$('table.full-size input[type=text]').prop('disabled', false);
+			
 			var currentRow = $(this).parent().parent();
+			currentRow.find('[idtype="buttonUploadTemplate"]').show();
 			var dayId = currentRow.attr('dayid');			
 			SaveTemplate(dayId);
 			DeleteMenu(dayId);
 
 			$(this).hide();
-			var saveId = '#' + $(this).attr('id').replace('Save', 'Create');
-			$(saveId).show();
+			var createId = '#' + $(this).attr('id').replace('Save', 'Create');
+			$(createId).show();
 		};
 	});
 	
@@ -1541,6 +1769,8 @@ $(document).ready ( function() {
 		if (shouldDecimalTimeBeShown) {
 			$('input[idtype=inputTime]').each(
 				function() {
+					var buttons = $(this).parent().find('button').hide();
+					
 					var time = $(this).val();
 					if(time) {
 						var regExp = /^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$/;
@@ -1559,6 +1789,13 @@ $(document).ready ( function() {
 		} else {
 			$('input[idtype=inputTime]').each(
 				function() {
+					if ($(this).parent().parent().hasClass('inProgress')) {
+						$(this).parent().find('button[idtype="buttonTimeStop"]').show();
+					} else {
+						$(this).parent().find('button[idtype="buttonTimeStart"]').show();
+					}
+					
+					
 					var id = $(this).attr('id');
 					$(this).val(localStorage[id]);
 				}
