@@ -3,7 +3,7 @@
 function CreateCurrentDayButton() {
 	
 	var buttonAllDays = $('<button></button>', {
-		'class': 'mdl-button mdl-js-button mdl-js-ripple-effect',
+		'class': 'mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--raised mdl-button--accent',
 		id: 'allDaysToggle'
 	})
 	.css({
@@ -12,7 +12,7 @@ function CreateCurrentDayButton() {
 	.append('Весь месяц');
 	
 	var buttonToday = $('<button></button>', {
-		'class': 'mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent',
+		'class': 'mdl-button mdl-js-button mdl-js-ripple-effect',
 		id: 'currentDayToggle'
 	})	
 	.css({
@@ -736,19 +736,42 @@ function CreateOtherRow(dayId, prefix) {
 	})
 	.append(labelTask);
 
-	var labelTime = $('<label></label>', {
+	var labelTime = GetTimeForOtherLabel(dayId)
+	
+	/*var labelTime = $('<label></label>', {
 		idtype: 'labelTime',
 		id: dayId + '_other_labelTime'
 	})
 	.css({
 		width: '70px'
 	})
-	.append(GetTimeForOtherLabel(dayId));
+	.append(GetTimeForOtherLabel(dayId));*/
 
+	var labelTimeUsual = $('<label></label>', {
+		idtype: 'labelTime',
+		id: dayId + '_other_labelTime_usual',
+		'class': 'usualTime'
+	})
+	.css({
+		width: '70px'
+	})
+	.append(ToTime(labelTime));
+	
+	var labelTimeDecimal = $('<label></label>', {
+		idtype: 'labelTime',
+		id: dayId + '_other_labelTime_decimal',
+		'class': 'decimalTime'
+	})
+	.css({
+		width: '70px',
+		display: 'none'
+	})
+	.append(labelTime);
+	
 	var tdTime = $('<td></td>', {
 		'class': 'subtaskTd'
 	})
-	.append(labelTime);
+	.append(labelTimeUsual, labelTimeDecimal);
 
 	var tdComment = $('<td></td>', {
 		colspan: 4
@@ -1346,10 +1369,10 @@ $(document).ready ( function() {
 
 	if(!prefix) {
 		CreateCurrentDayButton();
-		var currentDayId = GetCurrentDayId();
+		/*var currentDayId = GetCurrentDayId();
 		$('tr.intervalRow, tr[id], tr.dayoff').hide();
 		$('#' + currentDayId).addClass('timesheetOpened');
-		$('#' + currentDayId + ', [dayid=' + currentDayId + ']').show();
+		$('#' + currentDayId + ', [dayid=' + currentDayId + ']').show();*/
 	}
 	
 	
@@ -1400,8 +1423,13 @@ $(document).ready ( function() {
 			if(!$(this).is(':visible')) {
 				$('.trTimeChecker.task[dayid="' + dayId + '"]').last().find('[idtype="' + idType + '"]').focus();
 			}
-
-			$('#' + prefix + dayId + '_other_labelTime').text(GetTimeForOtherLabel(dayId));
+			
+			//$('#' + prefix + dayId + '_other_labelTime').text(GetTimeForOtherLabel(dayId));
+			
+			var labelTime = GetTimeForOtherLabel(dayId);
+			$('#' + prefix + dayId + '_other_labelTime_usual').text(ToTime(labelTime));
+			$('#' + prefix + dayId + '_other_labelTime_decimal').text(labelTime);
+			
 			SetTableHeightForTime();
 		}
 	);
@@ -1454,7 +1482,12 @@ $(document).ready ( function() {
 				localStorage.removeItem(prefix + dayId);
 			}
 
-			$('#' + prefix + dayId + '_other_labelTime').text(GetTimeForOtherLabel(dayId));
+			//$('#' + prefix + dayId + '_other_labelTime').text(GetTimeForOtherLabel(dayId));
+			
+			var labelTime = GetTimeForOtherLabel(dayId);
+			$('#' + prefix + dayId + '_other_labelTime_usual').text(ToTime(labelTime));
+			$('#' + prefix + dayId + '_other_labelTime_decimal').text(labelTime);
+			
 			SetTableHeightForTime();
 		}
 	);
@@ -1510,16 +1543,21 @@ $(document).ready ( function() {
 
 			var subtaskCount = +mainRow.attr('subtaskcount');
 
-			var otherLine = $('#' + prefix + dayId + '_other_labelTime');
+			var otherLineUsual = $('#' + prefix + dayId + '_other_labelTime_usual');
+			var otherLineDecimal = $('#' + prefix + dayId + '_other_labelTime_decimal');
+			var labelTime;
 
 			if (subtaskCount == 1) {
 				rowsIndex[prefix + dayId] = CheckRowsNumber(rowsIndex[prefix + dayId], dayId);
 				rowsIndex[prefix + dayId] = RecountIds(dayId);
 				if (rowsIndex[prefix + dayId]) {
 					localStorage[prefix + dayId] = rowsIndex[prefix + dayId];
-				}
-
-				otherLine.text(GetTimeForOtherLabel(dayId));
+				}				
+				
+				labelTime = GetTimeForOtherLabel(dayId);				
+				otherLineUsual.text(ToTime(labelTime));
+				otherLineDecimal.text(labelTime);
+				
 				SetTableHeightForTime();
 				return;
 			}
@@ -1547,7 +1585,10 @@ $(document).ready ( function() {
 				localStorage.removeItem(prefix + dayId);
 			}
 
-			otherLine.text(GetTimeForOtherLabel(dayId));
+			labelTime = GetTimeForOtherLabel(dayId);				
+			otherLineUsual.text(ToTime(labelTime));
+			otherLineDecimal.text(labelTime);
+			
 			SetTableHeightForTime();
 		}
 	);
@@ -1655,7 +1696,10 @@ $(document).ready ( function() {
 			localStorage.removeItem(prefix + dayId + '_' + 'startTime' + taskIndex + '-' + subtaskIndex);
 			startTime.text('');
 
-			$('#' + prefix + dayId + '_other_labelTime').text(GetTimeForOtherLabel(dayId));
+			//$('#' + prefix + dayId + '_other_labelTime').text(GetTimeForOtherLabel(dayId));
+			var labelTime = GetTimeForOtherLabel(dayId);
+			$('#' + prefix + dayId + '_other_labelTime_usual').text(ToTime(labelTime));
+			$('#' + prefix + dayId + '_other_labelTime_decimal').text(labelTime);
 
 			rowsIndex[prefix + dayId] = CheckRowsNumber(rowsIndex[prefix + dayId], dayId);
 			rowsIndex[prefix + dayId] = RecountIds(dayId);
@@ -1805,6 +1849,11 @@ $(document).ready ( function() {
 					}
 				}
 			);
+			
+			
+			$('label[idtype=labelTime].usualTime').hide();			
+			$('label[idtype=labelTime].decimalTime').show();
+			
 		} else {
 			$('input[idtype=inputTime]').each(
 				function() {
@@ -1820,6 +1869,9 @@ $(document).ready ( function() {
 					$(this).val(localStorage[id]);
 				}
 			);
+			
+			$('label[idtype=labelTime].usualTime').show();			
+			$('label[idtype=labelTime].decimalTime').hide();
 		}
 	};
 });
