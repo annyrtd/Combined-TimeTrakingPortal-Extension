@@ -1288,6 +1288,7 @@ function ToSeconds(time) {
 	return seconds;
 }
 
+/*
 Timer.prototype.start = function() {
   
   var timer = this;
@@ -1309,6 +1310,32 @@ Timer.prototype.start = function() {
     //console.log(timer.seconds);
 	
 	var newValue = hours + ':' + minutes
+	if (timer.binding.value != newValue) {
+		timer.binding.value = newValue;
+	}
+  }, 1000);
+}
+*/
+
+Timer.prototype.start = function() {
+  
+  var timer = this;
+  var currentDate = new Date();
+  var currentTime = currentDate.getHours() + ':' + currentDate.getMinutes();
+  
+  if(!timer.binding.value) {
+	  timer.binding.value = '00:00';
+  }
+  
+  var startingTime = TCH_DifferenceOfTime(currentTime, timer.binding.value);  
+  
+  timer.ticks = true;
+  
+  timer.timeout = setInterval(function() { 
+	var currentDate = new Date();
+	var currentTime = currentDate.getHours() + ':' + currentDate.getMinutes();
+	var newValue = TCH_DifferenceOfTime(currentTime, startingTime);
+	
 	if (timer.binding.value != newValue) {
 		timer.binding.value = newValue;
 	}
@@ -1369,10 +1396,6 @@ $(document).ready ( function() {
 
 	if(!prefix) {
 		CreateCurrentDayButton();
-		/*var currentDayId = GetCurrentDayId();
-		$('tr.intervalRow, tr[id], tr.dayoff').hide();
-		$('#' + currentDayId).addClass('timesheetOpened');
-		$('#' + currentDayId + ', [dayid=' + currentDayId + ']').show();*/
 	}
 	
 	
