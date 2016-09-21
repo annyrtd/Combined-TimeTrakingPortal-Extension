@@ -6,6 +6,9 @@ rgb(96,125,139) - blue gray
 rgb(255,171,64) - orange
 */
 
+main span.mdl-layout-title {
+	line-height: 65px !important;
+}
 
 .blink  {
 	position: absolute !important; 
