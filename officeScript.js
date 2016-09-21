@@ -1185,7 +1185,8 @@ function SetWorkerCards()
 		function() {
 			var id = $(this).attr('for');
 			var text = $(this).text();
-			var toTheLeft = !$(this).parent().hasClass('mdl-card__supporting-text');
+			var toTheLeft = false;
+			//var toTheLeft = !$(this).parent().hasClass('mdl-card__supporting-text');
 			$(this).remove();
 			ChangeTitleToMDTooltip(id, text, ( toTheLeft ? 'mdl-tooltip--left' : ''));
 		}
