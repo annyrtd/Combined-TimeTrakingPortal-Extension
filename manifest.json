@@ -21,7 +21,11 @@
 			"run_at": "document_start"
 		},
 		{
-			"matches": [ "http://co-msk-app02/Personal*", "https://co-msk-app02/Personal*" ],
+			"matches": 
+			[ 
+				"http://co-msk-app02/Personal", "https://co-msk-app02/Personal", 
+				"http://co-msk-app02/Personal?*", "https://co-msk-app02/Personal?*" 
+			],
 			"js": [ "workTimeScript.js", "timeCheckerWorkTimeScript.js" ],
 			"css": [ "workTimeStyle.css", "timeCheckerWorkTimeStyle.css" ]
 		},

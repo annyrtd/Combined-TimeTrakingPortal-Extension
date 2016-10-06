@@ -640,3 +640,30 @@ select
 {
 	border-radius: 2px !important;
 }
+
+
+
+
+
+
+
+
+table.full-size tbody, table.full-size thead 
+{ 
+	background-color: white;
+}
+
+table.full-size th 
+{  
+	background-color: white !important;
+}
+
+table.full-size th { 
+    height: 30px;
+    line-height: 30px;
+}
+
+tr.summary {
+    font-weight: bolder;
+    background-color: white !important;
+}
