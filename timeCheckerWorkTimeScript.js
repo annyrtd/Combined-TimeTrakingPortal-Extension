@@ -1248,6 +1248,10 @@ function Timer(id, changeInnerText) {
   
   this.ticks = false;
   
+  var dayId = GetCurrentDayId();  
+  this.otherLabelUsual =  $('#' + dayId + '_other_labelTime_usual');
+  this.otherLabelDecimal =  $('#' + dayId + '_other_labelTime_decimal');
+  
   this.tickCallback = function() { console.log('Timer ', this.id, ' tick'); }
 }
 
@@ -1274,6 +1278,10 @@ Timer.prototype.start = function() {
 	
 		if (timer.binding[changingProperty] != newValue) {
 			timer.binding[changingProperty] = newValue;
+			var dayId = GetCurrentDayId();
+			var labelTime = GetTimeForOtherLabel(dayId);
+			timer.otherLabelUsual.text(ToTime(labelTime));
+			timer.otherLabelDecimal.text(labelTime);
 		}
 	}, 1000);
 }
@@ -1337,6 +1345,7 @@ ReportedTimeTimer.prototype.start = function() {
 		if (timer.timeForToday.text() != newValue) {
 			timer.timeForToday.text(newValue);
 			var reportedTime = RoundDecimalToQuarters(ToDecimal(TCH_DifferenceOfTime(newValue, '00:30')));
+			reportedTime = +reportedTime > 0 ? reportedTime : '0' ;
 			timer.reportedSpanUsual.text(ToTime(reportedTime));
 			timer.reportedSpanDecimal.text(reportedTime);
 			var labelTime = GetTimeForOtherLabel(dayId);
