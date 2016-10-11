@@ -160,6 +160,9 @@ function SetUpDay(currentRow, prefix) {
 
 			if (startTime) {
 				SetUp_StartTime(tempMainRow, startTime);
+				if (dayId != GetCurrentDayId()) {
+					localStorage.removeItem(prefix + dayId + '_startTime' + i + '-0');
+				}
 			}
 
 			previous.after(tempMainRow);
@@ -370,7 +373,8 @@ function TCH_SumOfTime(time1, time2)
 	var minutes2 = +time2.substr(position2 + 1);
 	var sumHours = +(hours1 + hours2) + Math.floor((minutes1 + minutes2)/60);
 	var sumMinutes = +(minutes1 + minutes2) % 60;
-	return TCH_Pad(sumHours,2) + ":" + TCH_Pad(sumMinutes,2);
+	//return TCH_Pad(sumHours,2) + ":" + TCH_Pad(sumMinutes,2);
+	return sumHours + ":" + TCH_Pad(sumMinutes,2);
 }
 
 /**
@@ -456,7 +460,8 @@ function TCH_DifferenceOfTime(time1, time2)
 			}
 		}
 	}
-	return TCH_Pad(differenceHours, 2) + ":" + TCH_Pad(differenceMinutes, 2);
+	return differenceHours + ":" + TCH_Pad(differenceMinutes, 2);
+	//return TCH_Pad(differenceHours, 2) + ":" + TCH_Pad(differenceMinutes, 2);
 }
 /*******************************/
 
@@ -1099,7 +1104,8 @@ function ToTime(decimal) {
 	var position2 = +decimal.indexOf(",");
 	if (position1 < 0 && position2 < 0) {
 		if (Number.isInteger(+decimal)) {
-			return TCH_Pad(decimal, 2) + ':00';
+			return decimal + ':00';
+			//return TCH_Pad(decimal, 2) + ':00';
 		} else {
 			return '00:00';
 		}			
@@ -1116,7 +1122,8 @@ function ToTime(decimal) {
 	}
 	var realMinutes = +(+minutes*60/100).toFixed();
 
-	return TCH_Pad(hours, 2) + ':' + TCH_Pad(realMinutes, 2);
+	//return TCH_Pad(hours, 2) + ':' + TCH_Pad(realMinutes, 2);
+	return hours + ':' + TCH_Pad(realMinutes, 2);
 }
 
 function RoundTimeForDay(dayId) {
@@ -1260,8 +1267,10 @@ TimerCollection.prototype.createTimer = function() {
 };
 
 
-function Timer(id) {
+function Timer(id, changeInnerText) {
   this.id = id;
+  
+  this.changeInnerText = changeInnerText;
   
   this.seconds = 0;
   
@@ -1272,74 +1281,31 @@ function Timer(id) {
   this.tickCallback = function() { console.log('Timer ', this.id, ' tick'); }
 }
 
-function ToSeconds(time) {
-	var regExp = /^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$/;
-	
-	if (!(regExp.test(time)))
-	{
-		return 0;
-	}
-  
-	var a = time.split(':'); // split it at the colons
-  
-	// minutes are worth 60 seconds. Hours are worth 60 minutes.
-	var seconds = (+a[0]) * 60 * 60 + (+a[1]) * 60; 
-  
-	return seconds;
-}
-
-/*
 Timer.prototype.start = function() {
-  
-  var timer = this;
-  var startingTime = ToSeconds(timer.binding.value);
-  if(!startingTime) {
-	  timer.binding.value = '00:00';
-  }
-  timer.ticks = true;
-  var currentDate = new Date();
-  timer.seconds = (parseInt(startingTime) || 0) + 1 + currentDate.getSeconds();
-  timer.timeout = setInterval(function() { 
-    timer.seconds += 1; 
-    var hours   = Math.floor(timer.seconds / 3600);
-    var minutes = Math.floor((timer.seconds - (hours * 3600)) / 60);
-
-    if (hours   < 10) {hours   = "0"+hours;}
-    if (minutes < 10) {minutes = "0"+minutes;}    
-
-    //console.log(timer.seconds);
 	
-	var newValue = hours + ':' + minutes
-	if (timer.binding.value != newValue) {
-		timer.binding.value = newValue;
-	}
-  }, 1000);
-}
-*/
-
-Timer.prototype.start = function() {
-  
-  var timer = this;
-  var currentDate = new Date();
-  var currentTime = currentDate.getHours() + ':' + currentDate.getMinutes();
-  
-  if(!timer.binding.value) {
-	  timer.binding.value = '00:00';
-  }
-  
-  var startingTime = TCH_DifferenceOfTime(currentTime, timer.binding.value);  
-  
-  timer.ticks = true;
-  
-  timer.timeout = setInterval(function() { 
+	var timer = this;
 	var currentDate = new Date();
 	var currentTime = currentDate.getHours() + ':' + currentDate.getMinutes();
-	var newValue = TCH_DifferenceOfTime(currentTime, startingTime);
+  
+	var changingProperty = this.changeInnerText ? "innerText" : "value";
 	
-	if (timer.binding.value != newValue) {
-		timer.binding.value = newValue;
+	if(!timer.binding[changingProperty]) {
+		timer.binding[changingProperty] = '0:00';
 	}
-  }, 1000);
+  
+	var startingTime = TCH_DifferenceOfTime(currentTime, timer.binding[changingProperty]);  
+  
+	timer.ticks = true;
+  
+	timer.timeout = setInterval(function() { 
+		var currentDate = new Date();
+		var currentTime = currentDate.getHours() + ':' + currentDate.getMinutes();
+		var newValue = TCH_DifferenceOfTime(currentTime, startingTime);
+	
+		if (timer.binding[changingProperty] != newValue) {
+			timer.binding[changingProperty] = newValue;
+		}
+	}, 1000);
 }
 
 Timer.prototype.stop = function() {
@@ -1363,6 +1329,66 @@ Timer.prototype.toggle = function() {
 Timer.prototype.bindTo = function(el) {
   this.binding = el;
 }
+
+
+function ReportedTimeTimer() {  
+	this.seconds = 0;
+  
+	this.timeout = null;
+  
+	this.ticks = false;
+  
+	var dayId = GetCurrentDayId();  
+	this.otherLabelUsual =  $('#' + dayId + '_other_labelTime_usual');
+	this.otherLabelDecimal =  $('#' + dayId + '_other_labelTime_decimal');
+	this.reportedSpanUsual =  $('tr#' + dayId + ' td.time span.usualTime').first();
+	this.reportedSpanDecimal =  $('tr#' + dayId + ' td.time span.decimalTime').first();
+	this.timeForToday =  $('tr#' + dayId + ' td.time').first();
+  
+ // var labelTime = GetTimeForOtherLabel(dayId);
+	//		$('#' + prefix + dayId + '_other_labelTime_usual').text(ToTime(labelTime));
+		//	$('#' + prefix + dayId + '_other_labelTime_decimal').text(labelTime);
+  
+	this.tickCallback = function() { console.log('Timer ', this.id, ' tick'); }
+}
+
+ReportedTimeTimer.prototype.start = function() {
+	
+	var timer = this;
+	var currentDate = new Date();
+	var currentTime = currentDate.getHours() + ':' + currentDate.getMinutes();
+	var dayId = GetCurrentDayId();  
+	
+	var startingTime = TCH_DifferenceOfTime(currentTime, timer.timeForToday.text());  
+  
+	timer.ticks = true;
+  
+	timer.timeout = setInterval(function() { 
+		var currentDate = new Date();
+		var currentTime = currentDate.getHours() + ':' + currentDate.getMinutes();
+		var newValue = TCH_DifferenceOfTime(currentTime, startingTime);
+	
+		if (timer.timeForToday.text() != newValue) {
+			timer.timeForToday.text(newValue);
+			var reportedTime = RoundDecimalToQuarters(ToDecimal(TCH_DifferenceOfTime(newValue, '00:30')));
+			timer.reportedSpanUsual.text(ToTime(reportedTime));
+			timer.reportedSpanDecimal.text(reportedTime);
+			var labelTime = GetTimeForOtherLabel(dayId);
+			timer.otherLabelUsual.text(ToTime(labelTime));
+			timer.otherLabelDecimal.text(labelTime);
+		}
+	}, 1000);
+}
+
+ReportedTimeTimer.prototype.stop = function() {
+  this.ticks = false;
+  clearInterval(this.timeout);
+}
+
+ReportedTimeTimer.prototype.onTick = function(callback) {
+  this.tickCallback = callback;
+}
+
 
 
 
@@ -1393,6 +1419,9 @@ $(document).ready ( function() {
 	var shouldDecimalTimeBeShown = false;
 	
 	$('.trTimeChecker, .other, .header').hide();
+	
+	var reportedTimeTimer = new ReportedTimeTimer();
+	reportedTimeTimer.start();
 
 	if(!prefix) {
 		CreateCurrentDayButton();
