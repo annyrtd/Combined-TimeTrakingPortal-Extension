@@ -132,7 +132,6 @@ function SetUpDay(currentRow, prefix) {
 		index = localStorage[prefix + dayId];
 		for(var i = 0; i < index; i++) {
 			tempMainRow = CreateTimeCheckerRow(dayId, prefix, i);
-			//tempMainRow = CreateEmptyTimeCheckingRow(i, dayId);
 
 			tempMainRow.find('[idtype="inputTask"], [idtype="inputComment"]').each(function(){
 				var self = $(this);
@@ -172,7 +171,6 @@ function SetUpDay(currentRow, prefix) {
 				var subtaskCount = +localStorage[prefix + dayId + '_' + i];
 				for(var j = 1; j < subtaskCount; j++) {
 					tempSubtaskRow = CreateTimeCheckerRow(dayId, prefix, i, j);
-					//tempSubtaskRow = CreateSubtaskRow(i, j, dayId);
 
 					tempSubtaskRow.find('[idtype="inputTask"], [idtype="inputComment"]').each(function(){
 						var self = $(this);
@@ -215,7 +213,6 @@ function SetUpDay(currentRow, prefix) {
 		}
 	}
 	var emptyRow = CreateTimeCheckerRow(dayId, prefix, index);
-	//var emptyRow = CreateEmptyTimeCheckingRow(index, dayId);
 	localStorage.removeItem(prefix + dayId + '_' + index);
 
 	previous.after(emptyRow);
@@ -229,9 +226,7 @@ function SetUp_StartTime(row, startTime) {
 	var dayId = row.attr('dayid');
 	var input = row.find('[idtype="inputTime"]');
 	
-	if (dayId == GetCurrentDayId()) {
-		//row.find('[idtype=startTime]').text(startTime);
-		
+	if (dayId == GetCurrentDayId()) {		
 		row.addClass('inProgress');
 		input.prop('disabled', true);
 		row.find('[idtype=buttonTimeStart]').hide();
@@ -373,7 +368,6 @@ function TCH_SumOfTime(time1, time2)
 	var minutes2 = +time2.substr(position2 + 1);
 	var sumHours = +(hours1 + hours2) + Math.floor((minutes1 + minutes2)/60);
 	var sumMinutes = +(minutes1 + minutes2) % 60;
-	//return TCH_Pad(sumHours,2) + ":" + TCH_Pad(sumMinutes,2);
 	return sumHours + ":" + TCH_Pad(sumMinutes,2);
 }
 
@@ -461,7 +455,6 @@ function TCH_DifferenceOfTime(time1, time2)
 		}
 	}
 	return differenceHours + ":" + TCH_Pad(differenceMinutes, 2);
-	//return TCH_Pad(differenceHours, 2) + ":" + TCH_Pad(differenceMinutes, 2);
 }
 /*******************************/
 
@@ -742,15 +735,6 @@ function CreateOtherRow(dayId, prefix) {
 	.append(labelTask);
 
 	var labelTime = GetTimeForOtherLabel(dayId)
-	
-	/*var labelTime = $('<label></label>', {
-		idtype: 'labelTime',
-		id: dayId + '_other_labelTime'
-	})
-	.css({
-		width: '70px'
-	})
-	.append(GetTimeForOtherLabel(dayId));*/
 
 	var labelTimeUsual = $('<label></label>', {
 		idtype: 'labelTime',
@@ -845,7 +829,6 @@ function CheckRowsNumber(lastRowIndex, dayId) {
 			selector += '-' + lastSubtaskIndex;
 		}
 		$(selector).after(CreateTimeCheckerRow(dayId, prefix, ++lastRowIndex));
-		//$(selector).after(CreateEmptyTimeCheckingRow(++lastRowIndex, dayId));
 	} else {
 		for (var i = 0; i < lastRowIndex; i++) {
 			var currentRow = $('#' + prefix + dayId + '_' + 'trTimeChecker' + i);
@@ -1052,17 +1035,6 @@ function ShiftSubtask(taskIndex, dayId, prefix) {
 					localStorage.removeItem(previousId);
 				}
 			}
-			
-			/*
-			if ($(this).children().first().is('label')) {
-				var previousLabel = $(previousSubtaskTds[index]).children('label');
-				var currentLabel = $(this).children('label');
-				var previousId = previousLabel.attr('id');
-				var currentId = currentLabel.attr('id');
-			}
-			*/
-
-			//$(previousSubtaskTds[index]).children('input').val($(this).children('input').val());
 		});
 
 		previousRow = currentRow;
@@ -1105,7 +1077,6 @@ function ToTime(decimal) {
 	if (position1 < 0 && position2 < 0) {
 		if (Number.isInteger(+decimal)) {
 			return decimal + ':00';
-			//return TCH_Pad(decimal, 2) + ':00';
 		} else {
 			return '00:00';
 		}			
@@ -1122,7 +1093,6 @@ function ToTime(decimal) {
 	}
 	var realMinutes = +(+minutes*60/100).toFixed();
 
-	//return TCH_Pad(hours, 2) + ':' + TCH_Pad(realMinutes, 2);
 	return hours + ':' + TCH_Pad(realMinutes, 2);
 }
 
@@ -1345,10 +1315,6 @@ function ReportedTimeTimer() {
 	this.reportedSpanDecimal =  $('tr#' + dayId + ' td.time span.decimalTime').first();
 	this.timeForToday =  $('tr#' + dayId + ' td.time').first();
   
- // var labelTime = GetTimeForOtherLabel(dayId);
-	//		$('#' + prefix + dayId + '_other_labelTime_usual').text(ToTime(labelTime));
-		//	$('#' + prefix + dayId + '_other_labelTime_decimal').text(labelTime);
-  
 	this.tickCallback = function() { console.log('Timer ', this.id, ' tick'); }
 }
 
@@ -1476,8 +1442,6 @@ $(document).ready ( function() {
 				$('.trTimeChecker.task[dayid="' + dayId + '"]').last().find('[idtype="' + idType + '"]').focus();
 			}
 			
-			//$('#' + prefix + dayId + '_other_labelTime').text(GetTimeForOtherLabel(dayId));
-			
 			var labelTime = GetTimeForOtherLabel(dayId);
 			$('#' + prefix + dayId + '_other_labelTime_usual').text(ToTime(labelTime));
 			$('#' + prefix + dayId + '_other_labelTime_decimal').text(labelTime);
@@ -1502,7 +1466,6 @@ $(document).ready ( function() {
 			}
 
 			$('.subtask[dayid=' + dayId + '][idtype=' + idType + '][taskindex=' + taskIndex + ']').each(function() {
-			//$('.subtask[id^="' + dayId + '_' + idType + taskIndex + '"]').each(function() {
 				timerId = $(this).attr('timerid');
 				if (timerId) {
 					timers.getTimer(+timerId).stop();
@@ -1525,7 +1488,6 @@ $(document).ready ( function() {
 
 			mainTr.remove();
 
-			//rowsIndex[prefix + dayId] = RecountIds(dayId);
 			rowsIndex[prefix + dayId] = CheckRowsNumber(rowsIndex[prefix + dayId], dayId);
 			rowsIndex[prefix + dayId] = RecountIds(dayId);
 			if (rowsIndex[prefix + dayId]) {
@@ -1533,8 +1495,6 @@ $(document).ready ( function() {
 			} else {
 				localStorage.removeItem(prefix + dayId);
 			}
-
-			//$('#' + prefix + dayId + '_other_labelTime').text(GetTimeForOtherLabel(dayId));
 			
 			var labelTime = GetTimeForOtherLabel(dayId);
 			$('#' + prefix + dayId + '_other_labelTime_usual').text(ToTime(labelTime));
@@ -1553,7 +1513,6 @@ $(document).ready ( function() {
 			var mainRow = $('#' + prefix + dayId + '_' + 'trTimeChecker' + taskIndex);
 			var newSubtaskIndex = +mainRow.attr('subtaskcount');
 			tr.after(CreateTimeCheckerRow(dayId, prefix, taskIndex, newSubtaskIndex));
-			//tr.after(CreateSubtaskRow(taskIndex, newSubtaskIndex, dayId));
 
 			var subtaskCount = newSubtaskIndex + 1;
 
@@ -1650,8 +1609,6 @@ $(document).ready ( function() {
 			var currentDate = new Date();
 			var time = currentDate.getHours() + ":" + currentDate.getMinutes();
 
-			// TODO: add counting seconds ???
-
 			var mainRow = $(this).parent().parent();
 			mainRow.find('[idtype=startTime]').text(time);
 			mainRow.find('[idtype=inputTime]').prop('disabled', true);
@@ -1699,7 +1656,7 @@ $(document).ready ( function() {
 	$(document).on('click', '[idtype="buttonTimeStop"]',
 		function() {
 			var currentDate = new Date();
-			var time = currentDate.getHours() + ":" + currentDate.getMinutes(); // + "." + currentDate.getSeconds();
+			var time = currentDate.getHours() + ":" + currentDate.getMinutes(); 
 
 			var mainRow = $(this).parent().parent();
 			var dayId = mainRow.attr('dayid');
@@ -1716,8 +1673,7 @@ $(document).ready ( function() {
 			var input = mainRow.find('[idtype=inputTime]');
 			var startTime = mainRow.find('[idtype=startTime]');
 			
-			var regExp = /^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$/;
-			//var currentTime = input.val();	
+			var regExp = /^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$/;	
 			var currentTime = mainRow.attr('currenttime') || '0';
 			mainRow.removeAttr('currenttime');
 			
@@ -1748,7 +1704,6 @@ $(document).ready ( function() {
 			localStorage.removeItem(prefix + dayId + '_' + 'startTime' + taskIndex + '-' + subtaskIndex);
 			startTime.text('');
 
-			//$('#' + prefix + dayId + '_other_labelTime').text(GetTimeForOtherLabel(dayId));
 			var labelTime = GetTimeForOtherLabel(dayId);
 			$('#' + prefix + dayId + '_other_labelTime_usual').text(ToTime(labelTime));
 			$('#' + prefix + dayId + '_other_labelTime_decimal').text(labelTime);
@@ -1910,7 +1865,6 @@ $(document).ready ( function() {
 			$('input[idtype=inputTime]').each(
 				function() {
 					if ($(this).parent().parent().hasClass('inProgress')) {
-						//$(this).parent().find('button[idtype="buttonTimeStop"]').show();
 						return true;
 					} else {
 						$(this).parent().find('button[idtype="buttonTimeStart"]').show();
