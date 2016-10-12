@@ -267,7 +267,7 @@ function GetTimeLeftForTheTask(dayId, time){
 		var regExp = /^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$/;
 
 		if (regExp.test(value)) {
-			return TCH_SumOfTime('00:00', value);
+			return TCH_SumOfTime('0:00', value);
 		} else {
 			return '';
 		}
@@ -283,8 +283,8 @@ function GetTimeLeftForTheTask(dayId, time){
 		.split('<br>')
 		.map(mapTimes);
 
-	var result = '00:00';
-	time = TCH_SumOfTime('00:00', time);
+	var result = '0:00';
+	time = TCH_SumOfTime('0:00', time);
 
 	for (var i = 0; i < startTimes.length; i++) {
 		if (startTimes[i] && finishTimes[i]) {
@@ -444,7 +444,7 @@ function TCH_DifferenceOfTime(time1, time2)
 		{
 			if (minutes1 >= minutes2)
 			{
-				differenceHours = "00";
+				differenceHours = "0";
 				differenceMinutes = +(minutes1 - minutes2);
 			}
 			else
@@ -1078,7 +1078,7 @@ function ToTime(decimal) {
 		if (Number.isInteger(+decimal)) {
 			return decimal + ':00';
 		} else {
-			return '00:00';
+			return '0:00';
 		}			
 	}
 	
@@ -1089,7 +1089,7 @@ function ToTime(decimal) {
 	var minutes = +decimal.substr(position + 1, 2);
 	if (!(Number.isInteger(+hours) && Number.isInteger(+minutes) && minutes >= 0))
 	{
-		return '00:00';
+		return '0:00';
 	}
 	var realMinutes = +(+minutes*60/100).toFixed();
 
@@ -1344,7 +1344,7 @@ ReportedTimeTimer.prototype.start = function() {
 	
 		if (timer.timeForToday.text() != newValue) {
 			timer.timeForToday.text(newValue);
-			var reportedTime = RoundDecimalToQuarters(ToDecimal(TCH_DifferenceOfTime(newValue, '00:30')));
+			var reportedTime = RoundDecimalToQuarters(ToDecimal(TCH_DifferenceOfTime(newValue, '0:30')));
 			reportedTime = +reportedTime > 0 ? reportedTime : '0' ;
 			timer.reportedSpanUsual.text(ToTime(reportedTime));
 			timer.reportedSpanDecimal.text(reportedTime);
