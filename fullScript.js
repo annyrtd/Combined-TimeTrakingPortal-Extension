@@ -171,10 +171,10 @@ function CreateMenu()
 	);	
 	
 	$("#menu_li2").append($("<ul id='menu_li2_submenu'><ul>"));
-	$("#menu_li2_submenu").load("/Notes ul.nav2 li",
+	$("#menu_li2_submenu").load("/PersonalDaysoff ul.nav2 li",
 		function()
 		{
-			$("#menu_li2_submenu li").last().children("a").attr("href", "http://co-msk-app02/Notes");
+			$("#menu_li2_submenu li").eq(1).children("a").attr("href", "http://co-msk-app02/PersonalDaysoff");
 			$("#menu_li2_submenu a").each(
 				function()
 				{
@@ -186,11 +186,26 @@ function CreateMenu()
 	);	
 	
 	$("#menu_li3").append($("<ul id='menu_li3_submenu'><ul>"));
-	$("#menu_li3_submenu").load("/Calendar ul.nav2 li",
+	$("#menu_li3_submenu").load("/Notes ul.nav2 li",
 		function()
 		{
-			$("#menu_li3_submenu li").eq(1).children("a").attr("href", "http://co-msk-app02/Calendar");
+			$("#menu_li3_submenu li").last().children("a").attr("href", "http://co-msk-app02/Notes");
 			$("#menu_li3_submenu a").each(
+				function()
+				{
+					$(this).text($(this).text().toUpperCase());
+				}
+			);	
+			
+		}
+	);
+	
+	$("#menu_li4").append($("<ul id='menu_li4_submenu'><ul>"));
+	$("#menu_li4_submenu").load("/Calendar ul.nav2 li",
+		function()
+		{
+			$("#menu_li4_submenu li").eq(1).children("a").attr("href", "http://co-msk-app02/Calendar");
+			$("#menu_li4_submenu a").each(
 				function()
 				{
 					$(this).text($(this).text().toUpperCase());
