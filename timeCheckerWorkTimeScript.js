@@ -222,11 +222,13 @@ function SetUpDay(currentRow, prefix) {
 	return index;
 }
 
+
+/*
 function SetUp_StartTime(row, startTime) {
 	var dayId = row.attr('dayid');
 	var input = row.find('[idtype="inputTime"]');
 	
-	if (dayId == GetCurrentDayId()) {		
+	if (dayId == GetCurrentDayId()) {	
 		row.addClass('inProgress');
 		input.prop('disabled', true);
 		row.find('[idtype=buttonTimeStart]').hide();
@@ -245,6 +247,11 @@ function SetUp_StartTime(row, startTime) {
 		timer.bindTo(input.get(0));
 		row.attr('timerid', timer.id);
 		timer.start();
+		
+		
+		
+		var test = GetTimeLeftForTheTask(dayId, startTime);
+		
 	} else {
 		var time = GetTimeLeftForTheTask(dayId, startTime);
 		var inputTime = input;
@@ -255,6 +262,36 @@ function SetUp_StartTime(row, startTime) {
 			inputTime.val(time);
 		}			
 	}
+}*/
+
+function SetUp_StartTime(row, startTime) {
+	var dayId = row.attr('dayid');
+	var input = row.find('[idtype="inputTime"]');
+	
+	var time = GetTimeLeftForTheTask(dayId, startTime);
+	var oldValue = input.val();
+	if (oldValue) {
+		input.val(TCH_SumOfTime(oldValue, time));
+	} else {
+		input.val(time);
+	}	
+	
+	if (dayId == GetCurrentDayId()) {	
+		row.addClass('inProgress');
+		input.prop('disabled', true);
+		row.find('[idtype=buttonTimeStart]').hide();
+		row.find('[idtype=buttonTimeStop]').show();		
+		
+		var currentDate = new Date();
+		var time = currentDate.getHours() + ":" + currentDate.getMinutes();
+		row.find('[idtype=startTime]').text(time);
+		row.attr('currenttime', input.val());
+		
+		var timer = timers.createTimer();
+		timer.bindTo(input.get(0));
+		row.attr('timerid', timer.id);
+		timer.start();		
+	} 
 }
 
 /**
@@ -267,10 +304,14 @@ function GetTimeLeftForTheTask(dayId, time){
 		var regExp = /^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$/;
 
 		if (regExp.test(value)) {
-			return TCH_SumOfTime('0:00', value);
-		} else {
-			return '';
+			return PadTime(value);
 		}
+		if(value.indexOf('...') >= 0) {
+			var currentDate = new Date();
+			return PadTime(currentDate.getHours() + ":" + currentDate.getMinutes());
+		}
+		
+		return '';
 	};
 
 	var dayRow = $('#' + dayId);
@@ -284,7 +325,9 @@ function GetTimeLeftForTheTask(dayId, time){
 		.map(mapTimes);
 
 	var result = '0:00';
-	time = TCH_SumOfTime('0:00', time);
+	if (time.length != 5) {
+		time = '0' + time;
+	}
 
 	for (var i = 0; i < startTimes.length; i++) {
 		if (startTimes[i] && finishTimes[i]) {
@@ -299,6 +342,14 @@ function GetTimeLeftForTheTask(dayId, time){
 	}
 
 	return result;
+}
+
+function PadTime(time) {
+	var position = time.indexOf(":");
+	var hours = time.substr(0, position);
+	var minutes = time.substr(position + 1);
+	
+	return TCH_Pad(hours, 2) + ":" + TCH_Pad(minutes, 2);
 }
 
 function SetTableHeightForTime() {
