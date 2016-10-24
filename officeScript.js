@@ -212,7 +212,7 @@ function CreateSelectForGroups() {
 	if (IsMyHomeOffice())
 	{
 		button = $('<button style="float: left;" id="groupSelectButton" class="mdl-button mdl-js-button mdl-button--icon' 
-			+'  mdl-button--accent mdl-js-ripple-effect"><i class="material-icons">group</i></button>')
+			+'  mdl-button--accent mdl-js-ripple-effect"><i class="material-icons">group</i></button>');
 		tooltip = $('<div class="mdl-tooltip" for="groupSelectButton">Моя группа</div>');	
 	}
 	
@@ -495,7 +495,7 @@ function AddResetFiltersButton()
 		{
 			$(this).append('<td class="reset button"></td>');
 		}
-	)
+	);
 	
 	var tooltip = $('<div class="mdl-tooltip" for="idReset">Сбросить<br>фильтры</div>');
 	
@@ -532,8 +532,7 @@ function SetFilters()
 		if (inputText == "NoGroup")
 		{
 			$('td.workgroup')
-			.not('[style~="display: none;"]')
-			each(
+			.not('[style~="display: none;"]').each(
 				function(index)
 				{
 					if ($(this).text() != "")
@@ -546,8 +545,7 @@ function SetFilters()
 			.each(
 				function()
 				{
-					var span = $(this).find('span.workgroup').first();
-					if (span) 
+					if ($(this).find('span.workgroup').length)
 					{
 						$(this).hide();
 					}
@@ -657,8 +655,7 @@ function SetFilters()
 			.each(
 				function()
 				{
-					var span = $(this).find('span.room').first();
-					if (span) 
+					if ($(this).find('span.room').length)
 					{
 						$(this).hide();
 					}
@@ -718,18 +715,12 @@ function SelectHomeGroup()
 	$("div.card-square").show();
 	$("#searchInput").val("");
 	$("#card-searchInput").val("");
-	
-	var inputText = GetMyGroupName();	
-	$("#workgroupSelect").val(inputText);
-	$('#groupMenuSpan').text(inputText);
-	
-	if (inputText == "")
-	{
-		return;
-	}
-	
-	if (inputText == "NoGroup")
-	{
+
+	var inputText = GetMyGroupName();
+	$("#workgroupSelect").val(inputText ? inputText : "NoGroup" );
+	$('#groupMenuSpan').text(inputText ? inputText : "---");
+
+	if (inputText == "") {
 		$('td.workgroup')
 		.not('[style~="display: none;"]')
 		.each(
@@ -737,6 +728,18 @@ function SelectHomeGroup()
 			{
 				if ($(this).text() != "")			
 					$(this).parent().hide();
+			}
+		);
+
+		$('.card-square')
+		.not('[style~="display: none;"]')
+		.each(
+			function()
+			{
+				if ($(this).find('span.workgroup').length)
+				{
+					$(this).hide();
+				}
 			}
 		);
 		return;
@@ -799,16 +802,10 @@ function SelectHomeRoom()
 	$("#card-searchInput").val("");
 	
 	var inputText = GetMyRoomNumber();
-	$("#roomSelect").val(inputText);
-	$('#roomMenuSpan').text(inputText);
-	
-	if (inputText == "")
-	{
-		return;
-	}
-	
-	if (inputText == "NoRoom")
-	{
+	$("#roomSelect").val(inputText ? inputText : "NoRoom");
+	$('#roomMenuSpan').text(inputText ? inputText : "---");
+
+	if (inputText == "") {
 		$('td.room')
 		.not('[style~="display: none;"]')
 		.each(
@@ -818,8 +815,21 @@ function SelectHomeRoom()
 					$(this).parent().hide();
 			}
 		);
+		$('.card-square')
+		.not('[style~="display: none;"]')
+		.each(
+			function()
+			{
+				if ($(this).find('span.room').length)
+				{
+					$(this).hide();
+				}
+			}
+		);
+
 		return;
 	}
+
 	var cellsThatContainInputText = 'td.room:contains("' + inputText + '")';			
 	$('td.room').not(cellsThatContainInputText).parent().hide();	
 	
@@ -852,6 +862,7 @@ function SelectHomeRoom()
 				}
 			}
 		);
+
 		return roomNumber;
 	}
 
@@ -1516,9 +1527,9 @@ function AddFilterMenuForCards()
 		for(var i = 0; i < groupValues.length; i++) {		
 			li = $('<li></li>', {
 				'class': 'mdl-menu__item selectLi',
-				datavalue: groupValues[i],
+				datavalue: groupText[i] ? groupValues[i] : "NoGroup",
 			})
-			.append(groupText[i]);
+			.append(groupText[i] ? groupText[i] : "---");
 			
 			if (groupValues[i]) {
 				shouldGroupBeAdded = true;
@@ -1562,12 +1573,12 @@ function AddFilterMenuForCards()
 		
 		var shouldRoomBeAdded = false;
 		
-		for(var i = 0; i < roomValues.length; i++) {		
+		for(var i = 0; i < roomValues.length; i++) {
 			li = $('<li></li>', {
 				'class': 'mdl-menu__item selectLi',
-				datavalue: roomValues[i],
+				datavalue: roomText[i] ? roomValues[i] : "NoRoom",
 			})
-			.append(roomText[i]);
+			.append(roomText[i] ? roomText[i] : "---");
 			
 			if (roomValues[i]) {
 				shouldRoomBeAdded = true;
@@ -1743,12 +1754,28 @@ function SetProfileImages()
 			{				
 				if (localStorage[email])
 				{
-					src = localStorage[email];
+					src = localStorage[email];				
 					
-					if (src) 
-					{
-						SetIndividualProfileImage(item, src);
-					}					
+					var request;
+					if(window.XMLHttpRequest) {
+						request = new XMLHttpRequest();
+					}
+					else {
+						request = new ActiveXObject("Microsoft.XMLHTTP");
+					}
+					request.open('GET', src, true);
+					request.onreadystatechange = function() {
+						if (request.readyState === 4){
+							if (request.status === 404) {  
+								localStorage.removeItem(email);
+							}  else {
+								SetIndividualProfileImage(item, src);
+							}
+						} 
+					};	
+					try {
+						request.send(); 	
+					} catch (e) {}
 				}
 				else {
 					$.get("http://confirmitconnect.firmglobal.com/Search/Pages/PeopleResults.aspx?k=" + email, {}, function(data, status, xhr) {
@@ -1769,6 +1796,7 @@ function SetProfileImages()
 		}
 	);		
 }
+
 
 
 function ClearLocalStorage() {
@@ -1882,16 +1910,14 @@ function SetGenderForEnglishLanguage() {
 http://morpher.ru/Demo.aspx?s=%D0%9A%D0%BE%D0%B2%D0%B0%D0%BB%D1%8C%D1%87%D1%83%D0%BA%20%D0%92%D0%B8%D0%BA%D1%82%D0%BE%D1%80%D0%B8%D1%8F
 */
 
-function SetIndividualProfileImage(item, src) 
-{
+function SetIndividualProfileImage(item, src) {
 	item.css({
 		background: 'url("' + src + '") no-repeat',
 		backgroundSize: 'cover'
 	});
 }
 
-function SetGender(card, gender) 
-{
+function SetGender(card, gender) {
 	
 		/* ♀ &#9792; woman */
 		/* ♂ &#9794; man */
@@ -1934,13 +1960,11 @@ function SetGender(card, gender)
 	}
 }
 
-function FixDownloadedDataForProfileImages(data) 
-{
+function FixDownloadedDataForProfileImages(data) {
 	return data.replace(/\/(_layouts|Style)+/g, "http://confirmitconnect.firmglobal.com/$1").replace('IMNRC', 'String.prototype.toLowerCase');
 }
 
-function FixDownloadedDataForGender(data) 
-{
+function FixDownloadedDataForGender(data) {
 	return data.replace(/(\/WebResource|images|orphus|logo)+/g, "http://morpher.ru/$1").replace('IMNRC', 'String.prototype.toLowerCase');
 }
 
@@ -1972,10 +1996,8 @@ function CreateEmailLink() {
 
 
 
-$(document).ready
-( 
-	function() 
-	{
+$(document).ready(
+	function() {
 		CreateSearchInput_withMD();	
 		SetClassesOnColumns();		
 		
@@ -2002,8 +2024,7 @@ $(document).ready
 		.not(".mdl-button--icon")
 		.not("form[action='/Remote/Come'] button, form[action='/Remote/Leave'] button")
 		.each(
-			function(index)
-			{	
+			function(index) {
 				ChangeButtonsToMD.apply(this);				
 			}
 		);
@@ -2029,8 +2050,7 @@ $(document).ready
 		******************************/
 		
 		$( "#searchInput" ).on("input", 
-			function() 
-			{					
+			function() {
 				$("#workgroupSelect, #workStateSelect, #roomSelect, #genderSelect").val("");
 				$('#workstateMenu').attr('datavalue', '')
 				$('#stateMenuSpan').text('Статус')
@@ -2063,8 +2083,7 @@ $(document).ready
 		);		
 		
 		$("#card-searchInput").on("input", 
-			function() 
-			{			
+			function() {
 				$("#workgroupSelect, #workStateSelect, #roomSelect, #genderSelect").val("");
 				$('#workstateMenu').attr('datavalue', '')
 				$('#stateMenuSpan').text('Статус')
@@ -2098,8 +2117,7 @@ $(document).ready
 		******************************/
 		
 		$("#workgroupSelect, #workStateSelect, #roomSelect, #genderSelect").change(
-			function ()
-			{	
+			function () {
 				var datavalueGroup = $("select#workgroupSelect option").filter(":selected").text();
 				$('#groupMenuSpan').text(datavalueGroup);
 				
@@ -2194,8 +2212,7 @@ $(document).ready
 		******************************/
 		
 		$(".arrowDiv").click(		
-			function ()
-			{
+			function() {
 				// determine column for sort
 				var classToSort = GetColumnToSort($(this).parent());
 				var arrayToSort = $("table.full-size > tbody > tr");
@@ -2307,8 +2324,7 @@ $(document).ready
 		******************************/
 		
 		$("button#idReset").on("click", 
-			function()
-			{			
+			function() {
 				ResetTableParametres();			
 				ResizeTableHeader();
 				SetTableHeightForOffice();
@@ -2320,8 +2336,7 @@ $(document).ready
 		);
 		
 		$("button#card-idReset").on("click", 
-			function()
-			{			
+			function() {
 				ResetTableParametres();	
 				SetEmailButtonLink();			
 				
@@ -2335,8 +2350,7 @@ $(document).ready
 		******************************/
 		
 		$("#roomSelectButton").click(
-			function()
-			{
+			function() {
 				ResetTableParametres();
 				SelectHomeRoom();
 				ResizeTableHeader();
@@ -2347,8 +2361,7 @@ $(document).ready
 		);
 		
 		$("#groupSelectButton").click(
-			function()
-			{
+			function() {
 				ResetTableParametres();
 				SelectHomeGroup();
 				ResizeTableHeader();
@@ -2359,8 +2372,7 @@ $(document).ready
 		);		
 		
 		$('#card-roomSelectButton').click(
-			function()
-			{
+			function() {
 				ResetTableParametres();
 				SelectHomeRoom();
 				CheckResetButton();
@@ -2369,8 +2381,7 @@ $(document).ready
 		);
 		
 		$('#card-groupSelectButton').click(
-			function()
-			{
+			function() {
 				ResetTableParametres();
 				SelectHomeGroup();
 				CheckResetButton();
@@ -2383,8 +2394,7 @@ $(document).ready
 		******************************/
 		
 		$('#table-button').click(
-			function() 
-			{
+			function() {
 				var className = 'mdl-button--fab';
 				if ($(this).hasClass(className))
 					return;
@@ -2400,8 +2410,7 @@ $(document).ready
 		);
 		
 		$('#card-button').click(
-			function() 
-			{
+			function() {
 				var className = 'mdl-button--fab';
 				if ($(this).hasClass(className))
 					return;
@@ -2419,12 +2428,10 @@ $(document).ready
 		******************************/
 
 		$(window).resize(
-			function() 
-			{
+			function() {
 				ResizeTableHeader();
 				SetTableHeightForOffice();
 			}
 		).resize(); /* Trigger resize handler */
-				
 	}		
 );

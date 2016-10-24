@@ -1,4 +1,5 @@
 ﻿var timers = new TimerCollection();
+var shouldDecimalTimeBeShown = false;
 
 function CreateCurrentDayButton() {
 	
@@ -283,7 +284,7 @@ function SetUp_StartTime(row, startTime) {
 		row.find('[idtype=buttonTimeStop]').show();		
 		
 		var currentDate = new Date();
-		var time = currentDate.getHours() + ":" + currentDate.getMinutes();
+		time = currentDate.getHours() + ":" + currentDate.getMinutes();
 		row.find('[idtype=startTime]').text(time);
 		row.attr('currenttime', input.val());
 		
@@ -344,6 +345,9 @@ function GetTimeLeftForTheTask(dayId, time){
 	return result;
 }
 
+/**
+ * @return {string}
+ */
 function PadTime(time) {
 	var position = time.indexOf(":");
 	var hours = time.substr(0, position);
@@ -370,7 +374,7 @@ function SetTableHeightForTime() {
 	if (!CheckIsMonth())
 	{
 		height = height
-			- $('div.buttonDiv').outerHeight(true);
+			- $('div.buttonDiv').outerHeight(true)
 			- 20;
 	}
 
@@ -382,6 +386,9 @@ function SetTableHeightForTime() {
 	}
 }
 
+/**
+ * @return {boolean}
+ */
 function CheckIsMonth() {
 	return $('button.resetButton').length <= 0;
 }
@@ -511,7 +518,7 @@ function TCH_DifferenceOfTime(time1, time2)
 
 function CreateTimeCheckerRow(dayId, prefix, taskIndex, subtaskIndex) {
 
-	var subtaskIndex = subtaskIndex ? subtaskIndex : 0;
+	subtaskIndex = subtaskIndex ? subtaskIndex : 0;
 
 	var inputTask = $('<input />', {
 		type: 'text',
@@ -673,6 +680,11 @@ function CreateTimeCheckerRow(dayId, prefix, taskIndex, subtaskIndex) {
 	componentHandler.upgradeElement(buttonAddSubtask.get(0));
 	componentHandler.upgradeElement(buttonDeleteTask.get(0));
 
+	if (shouldDecimalTimeBeShown) {
+		tr.find('[idtype=buttonTimeStart]').hide();
+		tr.find('[idtype=buttonTimeStop]').hide();
+	}
+
 	return tr;
 }
 
@@ -785,7 +797,7 @@ function CreateOtherRow(dayId, prefix) {
 	})
 	.append(labelTask);
 
-	var labelTime = GetTimeForOtherLabel(dayId)
+	var labelTime = GetTimeForOtherLabel(dayId);
 
 	var labelTimeUsual = $('<label></label>', {
 		idtype: 'labelTime',
@@ -1239,7 +1251,7 @@ function SaveTemplate(dayId) {
 	}
 }
 
-function UploadTemplate(dayId, taskLastIndex) {	
+function UploadTemplate(dayId, taskLastIndex) {
 	var	prefix = GetCurrentMonthAndYearPrefix();
 	var count = localStorage['templateNumber'];
 	if(!count) {
@@ -1335,16 +1347,16 @@ Timer.prototype.start = function() {
 			timer.otherLabelDecimal.text(labelTime);
 		}
 	}, 1000);
-}
+};
 
 Timer.prototype.stop = function() {
   this.ticks = false;
   clearInterval(this.timeout);
-}
+};
 
 Timer.prototype.onTick = function(callback) {
   this.tickCallback = callback;
-}
+};
 
 Timer.prototype.toggle = function() {
   
@@ -1353,11 +1365,11 @@ Timer.prototype.toggle = function() {
   } else {
     this.start();
   }
-}
+};
 
 Timer.prototype.bindTo = function(el) {
   this.binding = el;
-}
+};
 
 
 function ReportedTimeTimer() {  
@@ -1404,18 +1416,16 @@ ReportedTimeTimer.prototype.start = function() {
 			timer.otherLabelDecimal.text(labelTime);
 		}
 	}, 1000);
-}
+};
 
 ReportedTimeTimer.prototype.stop = function() {
   this.ticks = false;
   clearInterval(this.timeout);
-}
+};
 
 ReportedTimeTimer.prototype.onTick = function(callback) {
   this.tickCallback = callback;
-}
-
-
+};
 
 
 $(document).ready ( function() {
@@ -1442,7 +1452,7 @@ $(document).ready ( function() {
 	
 	var rowsIndex = SetUpInitialState();
 
-	var shouldDecimalTimeBeShown = false;
+
 	
 	$('.trTimeChecker, .other, .header').hide();
 	
@@ -1844,7 +1854,7 @@ $(document).ready ( function() {
 	);
 	
 	document.querySelectorAll('[idtype="buttonCreateTemplate"]').forEach(function(item) {
-		item.onclick = function(e) {
+		item.onclick = function() {
 			$('table.full-size input[type=text]').prop('disabled', true);
 			
 			var currentRow = $(this).parent().parent();
@@ -1859,7 +1869,7 @@ $(document).ready ( function() {
 	});
 	
 	document.querySelectorAll('[idtype="buttonSaveTemplate"]').forEach(function(item) {
-		item.onclick = function(e) {
+		item.onclick = function() {
 			$('table.full-size input[type=text]').prop('disabled', false);
 			
 			var currentRow = $(this).parent().parent();
@@ -1898,8 +1908,8 @@ $(document).ready ( function() {
 					if ($(this).parent().parent().hasClass('inProgress')) {
 						return true;
 					}
-					
-					var buttons = $(this).parent().find('button').hide();
+
+					$(this).parent().find('button').hide();
 					
 					var time = $(this).val();
 					if(time) {
