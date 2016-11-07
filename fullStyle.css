@@ -25,6 +25,11 @@ main span.mdl-layout-title {
 	display: none !important;
 }
 
+.is-dirty label.mdl-textfield__label {
+	display: none;
+}
+/****************/
+
 *:not(i)
 {
 	font-family: Roboto, sans-serif !important;
