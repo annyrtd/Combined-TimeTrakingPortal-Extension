@@ -1155,7 +1155,9 @@ function ToTime(decimal) {
 		return '0:00';
 	}
 	var realMinutes = +(+minutes*60/100).toFixed();
-
+	if (Object.is(hours, -0)) {
+        hours = '-0';
+	}
 	return hours + ':' + TCH_Pad(realMinutes, 2);
 }
 
