@@ -1820,7 +1820,7 @@ function SetAllPeopleGender() {
 	$('div.card-square').each(
 		function(index) {
 			var self = $(this);
-			var employee = self.find('.employee').first().text();
+			var employee = self.find('.employee').first().text().replace(/\(.*\)/g, '');
 			
 			var email = self.find('span.email').first().text();
 			

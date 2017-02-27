@@ -358,8 +358,15 @@ function GetTimeOfHolidays()
 			}
 		}
 	);
-	var hours = 8 * times;
+
+	var numberOfHoursPerDay = GetNumberOfHoursPerDay();
+	var hours = numberOfHoursPerDay * times;
 	return hours + ":00";
+}
+
+function GetNumberOfHoursPerDay()
+{
+	return parseInt($('table.full-size tbody tr[id^=day_]').first().find('td.time').eq(1).text());
 }
 
 
@@ -609,8 +616,9 @@ function GetCurrentTimeForWeek_ForStudent()
 }
 
 function GetTimeOfHolidaysForWeek()
-{	
-	var hours = 8 * $("tr.dayoff").not('tr[id]').not('[style~="display: none;"]').length;
+{
+	var numberOfHoursPerDay = GetNumberOfHoursPerDay()
+	var hours = numberOfHoursPerDay * $("tr.dayoff").not('tr[id]').not('[style*="display: none;"]').length;
 	return hours + ":00";
 }
 
