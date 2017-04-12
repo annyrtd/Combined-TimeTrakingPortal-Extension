@@ -1841,7 +1841,7 @@ function SetAllPeopleGender() {
 						var temp = $("<div></div>");
 						temp.html(updatedData);
 								
-						gender = temp.find('#ctl00_ctl00_BodyPlaceHolder_ContentPlaceHolder1_РодЧислоLabel').text();
+						gender = temp.find('#ctl00_ctl00_ctl00_BodyPlaceHolder_ContentPlaceHolder1_ContentPlaceHolder1_РодЧислоLabel').text();
 							
 						if (gender) 
 						{
