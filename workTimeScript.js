@@ -9,6 +9,8 @@ orderOfDays['Пт'] = 5;
 orderOfDays['Сб'] = 6;
 orderOfDays['Вс'] = 7;
 
+var origin = window.location.origin;
+
 function IsReportOnPage()
 {
 	var isHere = false;
@@ -1070,7 +1072,7 @@ function WriteFullNamesOfDays()
 function CreateSettings()
 {
 	$("div.mdl-layout__drawer").append($("<div id=settings></div>"));
-	$("#settings").load("http://co-msk-app02/Preferences/Edit form", 
+	$("#settings").load(origin + "/Preferences/Edit form",
 		function()
 		{
 			$("#settings").hide();

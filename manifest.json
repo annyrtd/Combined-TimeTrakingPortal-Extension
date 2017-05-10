@@ -10,11 +10,11 @@
 	},
 	"content_scripts": [
 		{
-			"matches": [ "http://co-msk-app02/*", "https://co-msk-app02/*" ],
+			"matches": [ "http://ruportal/*", "https://ruportal/*" ],
 			"exclude_matches":
 			[
-				"http://co-msk-app02/Preferences/Edit*",
-				"https://co-msk-app02/Preferences/Edit*"
+				"http://ruportal/Preferences/Edit*",
+				"https://ruportal/Preferences/Edit*"
 			],
 			"css": [ "screenOff.css", "fullStyle.css", "material.blue_grey-orange.min.css", "icon.css", "jquery-ui-1.10.4.custom.css" ],
 			"js": [ "jquery.js", "jquery-ui-1.10.4.custom.js", "fullScript.js", "material.min.js" ],
@@ -23,8 +23,8 @@
 		{
 			"matches": 
 			[ 
-				"http://co-msk-app02/Personal", "https://co-msk-app02/Personal", 
-				"http://co-msk-app02/Personal?*", "https://co-msk-app02/Personal?*" 
+				"http://ruportal/Personal", "https://ruportal/Personal", 
+				"http://ruportal/Personal?*", "https://ruportal/Personal?*" 
 			],
 			"js": [ "workTimeScript.js", "timeCheckerWorkTimeScript.js" ],
 			"css": [ "workTimeStyle.css", "timeCheckerWorkTimeStyle.css" ]
@@ -32,9 +32,9 @@
 		{
 			"matches": 
 			[ 
-				"http://co-msk-app02/", "https://co-msk-app02/", 
-				"http://co-msk-app02/?officeid*", "http://co-msk-app02/?order*", 
-				"https://co-msk-app02/?officeid*", "https://co-msk-app02/?order*" 
+				"http://ruportal/", "https://ruportal/", 
+				"http://ruportal/?officeid*", "http://ruportal/?order*", 
+				"https://ruportal/?officeid*", "https://ruportal/?order*" 
 			],
 			"js": [ "officeScript.js" ],
 			"css": [ "officeStyle.css" ]
@@ -42,7 +42,7 @@
 	],
 	
 	"permissions": [
-		"http://co-msk-app02/*",
+		"http://ruportal/*",
 		"http://confirmitconnect.firmglobal.com/Search/Pages/PeopleResults.aspx*",
 		"http://morpher.ru/Demo.aspx*"
 	],

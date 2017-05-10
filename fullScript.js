@@ -1,4 +1,6 @@
-﻿$(document).hide();
+﻿var origin = window.location.origin;
+
+$(document).hide();
 
 // OVERWRITES old selecor
 jQuery.expr[':'].contains = function(a, i, m) {
@@ -18,7 +20,7 @@ function ShowTableFullSizeAndHolidayBox()
 function SetTimeToLocalStorage()
 {
 	var temp = $("<div></div>");
-	temp.load("http://co-msk-app02/Personal tr.summary",
+	temp.load(origin + "/Personal tr.summary",
 		function ()
 		{
 			localStorage["current_time"] = $(this)
@@ -144,8 +146,8 @@ function CreateMenu()
 	$("#menu_li0_submenu").load("/ ul.nav2 li", 
 		function()
 		{
-			$("#menu_li0_submenu li").first().children("a").attr("href", "http://co-msk-app02/?officeid=1");
-			$("#menu_li0_submenu li").last().children("a").attr("href", "http://co-msk-app02/?officeid=2")
+			$("#menu_li0_submenu li").first().children("a").attr("href", origin + "/?officeid=1");
+			$("#menu_li0_submenu li").last().children("a").attr("href", origin + "/?officeid=2")
 			$("#menu_li0_submenu a").each(
 				function()
 				{
@@ -159,7 +161,7 @@ function CreateMenu()
 	$("#menu_li1_submenu").load("/Personal ul.nav2 li",
 		function()
 		{
-			$("#menu_li1_submenu li").last().children("a").attr("href", "http://co-msk-app02/Personal");
+			$("#menu_li1_submenu li").last().children("a").attr("href", origin + "/Personal");
 			$("#menu_li1_submenu a").each(
 				function()
 				{
@@ -174,7 +176,7 @@ function CreateMenu()
 	$("#menu_li2_submenu").load("/PersonalDaysoff ul.nav2 li",
 		function()
 		{
-			$("#menu_li2_submenu li").eq(1).children("a").attr("href", "http://co-msk-app02/PersonalDaysoff");
+			$("#menu_li2_submenu li").eq(1).children("a").attr("href", origin + "/PersonalDaysoff");
 			$("#menu_li2_submenu a").each(
 				function()
 				{
@@ -189,7 +191,7 @@ function CreateMenu()
 	$("#menu_li3_submenu").load("/Notes ul.nav2 li",
 		function()
 		{
-			$("#menu_li3_submenu li").last().children("a").attr("href", "http://co-msk-app02/Notes");
+			$("#menu_li3_submenu li").last().children("a").attr("href", origin + "/Notes");
 			$("#menu_li3_submenu a").each(
 				function()
 				{
@@ -204,7 +206,7 @@ function CreateMenu()
 	$("#menu_li4_submenu").load("/Calendar ul.nav2 li",
 		function()
 		{
-			$("#menu_li4_submenu li").eq(1).children("a").attr("href", "http://co-msk-app02/Calendar");
+			$("#menu_li4_submenu li").eq(1).children("a").attr("href", origin + "/Calendar");
 			$("#menu_li4_submenu a").each(
 				function()
 				{
@@ -342,7 +344,7 @@ function CreateFixedHeader()
 	$(document.body).show();
 	
 	var temp = $("<div></div>");
-	temp.load("http://co-msk-app02/Personal tr.summary",
+	temp.load(origin + "/Personal tr.summary",
 		function ()
 		{
 			var time = $(this)

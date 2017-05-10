@@ -4,6 +4,7 @@ jQuery.expr[':'].contains = function(a, i, m) {
 		.indexOf(m[3].toUpperCase()) >= 0;
 };
 
+var origin = window.location.origin;
 
 // для сортировки колонок
 function mergeSort(arrayToSort, compare) 
@@ -909,7 +910,7 @@ function ResizeTableHeader()
 function CreateSettingsForLangAndDisplay()
 {
 	$("div.mdl-layout__drawer").append($("<div id=settings></div>"));
-	$("#settings").load("http://co-msk-app02/Preferences/Edit form", 
+	$("#settings").load(origin + "/Preferences/Edit form",
 		function()
 		{
 			$("#settings").hide();
