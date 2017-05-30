@@ -5,6 +5,7 @@ jQuery.expr[':'].contains = function(a, i, m) {
 };
 
 var origin = window.location.origin;
+var wasCardsSetUp = true;
 
 // для сортировки колонок
 function mergeSort(arrayToSort, compare) 
@@ -910,34 +911,66 @@ function ResizeTableHeader()
 function CreateSettingsForLangAndDisplay()
 {
 	$("div.mdl-layout__drawer").append($("<div id=settings></div>"));
-	$("#settings").load(origin + "/Preferences/Edit form",
-		function()
-		{
-			$("#settings").hide();
-			$("#settings").prepend("<br><br><label><b>Настройки:</b></label>");
+
+    var settings = $("#settings");
+    settings.load(origin + "/Preferences/Edit form",
+		function() {
+			settings.hide();
+            settings.prepend("<br><br><label><b>Настройки:</b></label>");
 			$("#ReturnTo").val("/" + window.location.search);
-			$("#settings a").hide();
+			settings.find("a").hide();
+            settings.find("label").removeAttr("for");
+            settings.find("label").after("<br>");
+
+			/*$("#settings a").hide();
 			$("#settings label").removeAttr("for");
-			$("#settings label").after("<br>");
-			$("div.table-form").last().next().css(
+			$("#settings label").after("<br>");*/
+
+			var tableForm = $("div.table-form");
+
+            tableForm.last().next().css(
 			{
 				paddingTop: "2em"
 			});
-			
+
+            tableForm.hide();
+            tableForm.first().show();
+            tableForm.eq(4).show();
+            tableForm.eq(4).children('label').text('Вид по умолчанию:');
+
+			/*$("div.table-form").last().next().css(
+			{
+				paddingTop: "2em"
+			});
+
 			$("div.table-form").hide();
 			$("div.table-form").first().show();
 			$("div.table-form").eq(4).show();
-			
-			$("div.table-form").eq(4).children('label').text('Вид по умолчанию:')
-			$('select#SummaryWithoutToday option[value=No]').text('Таблица');
-			$('select#SummaryWithoutToday option[value=Yes]').text('Карточки');
+
+			$("div.table-form").eq(4).children('label').text('Вид по умолчанию:')*/
+
+			var selectDefaultView = $('select#SummaryWithoutToday');
+
+			selectDefaultView.find('option[value=No]').text('Таблица');
+			selectDefaultView.find('option[value=Yes]').text('Карточки');
+
+			//$('select#SummaryWithoutToday option[value=No]').text('Таблица');
+			//$('select#SummaryWithoutToday option[value=Yes]').text('Карточки');
+
+			if(selectDefaultView.find('option:selected').text() === 'Таблица') {
+				wasCardsSetUp = false;
+			} else {
+                //SetUpCardsPart();
+                SetProfileImages();
+                wasCardsSetUp = true;
+			}
 			
 			var office;
 			
 			if ($('head title').first().text().toLowerCase().indexOf('ярославль') > -1)
 			{
 				office = 'isRussianEquivalentSet_Yar';
-				if ($('#ListLanguage').children('option:selected').val() == 'English') {
+				if ($('#ListLanguage').children('option:selected').val() === 'English') {
 					if (localStorage[office]) {
 						SetGenderForEnglishLanguage();
 					} else {
@@ -950,7 +983,7 @@ function CreateSettingsForLangAndDisplay()
 				}
 			} else {
 				office = 'isRussianEquivalentSet_Msk';
-				if ($('#ListLanguage').children('option:selected').val() == 'English') {
+				if ($('#ListLanguage').children('option:selected').val() === 'English') {
 					if (localStorage[office]) {
 						SetGenderForEnglishLanguage();
 					} else {
@@ -971,7 +1004,7 @@ function CreateSettingsForLangAndDisplay()
 			
 			$("form[action='/Preferences/Edit'] button.inputReplaceButton").parent()
 			.css("width", "0px");	
-			$("#settings").fadeIn("fast");
+			settings.fadeIn("fast");
 		}
 	);
 }
@@ -1173,6 +1206,16 @@ function ChangeTableCardMode()
 	}
 }
 
+/*
+function SetUpCardsPart() {
+    SetWorkerCards();
+    AddFilterMenuForCards();
+
+    SetProfileImages();
+    SetAllPeopleGender();
+    SetEmailButtonLink();
+}
+*/
 
 // Добавление карточек работников
 function SetWorkerCards()
@@ -1743,13 +1786,9 @@ function SetProfileImages()
 	$('div.card-square').each(
 		function() {
 			var self = $(this);
-			var item = self.children('div.mdl-card__supporting-text').first()
-						.children('div.rowDiv').first()
-						.children('div.circular').first();
-			
+			var item = self.find('div.circular').first();
 			var email = self.find('span.email').first().text();
-			
-			var src, gender;
+			var src;
 			
 			if (email)
 			{				
@@ -2037,12 +2076,15 @@ $(document).ready(
 		
 		CreateEmailButton($('main span.mdl-layout-title'));
 		AddToggleButtonTableAndCards();
-		SetWorkerCards();
-		AddFilterMenuForCards();		
-		
-		SetProfileImages();
-		SetAllPeopleGender();
-		SetEmailButtonLink();
+
+        //SetUpCardsPart();
+
+        SetWorkerCards();
+        AddFilterMenuForCards();
+
+        //SetProfileImages();
+        SetAllPeopleGender();
+        SetEmailButtonLink();
 		
 		
 		
@@ -2415,6 +2457,13 @@ $(document).ready(
 				var className = 'mdl-button--fab';
 				if ($(this).hasClass(className))
 					return;
+
+                if (!wasCardsSetUp) {
+                    //SetUpCardsPart();
+                    SetProfileImages();
+                    wasCardsSetUp = true;
+                }
+
 				$(this).addClass(className);
 				$('#table-button').removeClass(className);
 				$('div.card-box').show();
