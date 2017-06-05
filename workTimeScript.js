@@ -820,25 +820,24 @@ function SeparateStartAndFinish()
 			var timeRange = "", timeRangeSpan;
 			
 			$(this).children("span").each(
-				function()
-				{
+				function() {
 					timeRangeSpan = $(this);
 					timeRange = timeRangeSpan.text();
+                    var isRemote = timeRangeSpan.hasClass("remote");
 					
 					if (timeRange == " ... ") {
 						timeOfLeavingSpan_title = timeRangeSpan.attr("title");
-						finish += "<span id='" + timeOfLeavingSpan_id + "'>...</span>"
-						+ "<br>";
+						finish += "<span " + (isRemote ? " class='remote' " : "") + "id='" + timeOfLeavingSpan_id + "'>...</span>" + "<br>";
 					} else {
 						positionCurrent = timeRange.indexOf("—");
 						if (positionCurrent > -1)
 						{
 							startCurrent = timeRange.substr(0, positionCurrent);
 							finishCurrent = timeRange.substr(positionCurrent + 1);
-							start += startCurrent + "<br>";
+							start += (isRemote ? "<span class='remote'>" + startCurrent + "</span>": startCurrent) + "<br>";
 							if (finishCurrent != "")
 							{
-								finish += finishCurrent + "<br>";
+								finish += (isRemote ? "<span class='remote'>" + finishCurrent + "</span>": finishCurrent) + "<br>";
 							}
 						} else {
 							timeRangeSpan.parent().nextAll('td.note.text').first().append(timeRangeSpan);
@@ -851,20 +850,6 @@ function SeparateStartAndFinish()
 			{
 				"class": "range text",
 			}).append(finish);
-			
-			if ($(this).children("span").hasClass("remote"))
-			{				
-				var tdSpanFinish = $("<span></span>",
-				{
-					"class": "remote",
-				}).append(tdFinish.html());
-				tdFinish.empty().append(tdSpanFinish);	
-
-				start = $("<span></span>",
-				{
-					"class": "remote",
-				}).append(start);				
-			}
 					
 			$(this).empty().append(start).after(tdFinish);
 			
