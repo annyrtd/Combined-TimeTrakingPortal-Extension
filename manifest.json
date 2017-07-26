@@ -44,7 +44,8 @@
 	"permissions": [
 		"http://ruportal/*",
 		"http://confirmitconnect.firmglobal.com/Search/Pages/PeopleResults.aspx*",
-		"http://morpher.ru/Demo.aspx*"
+		"http://morpher.ru/Demo.aspx*",
+		"https://confirmitconnect.firmglobal.com/Search/Pages/PeopleResults.aspx*"
 	],
 	
 	"web_accessible_resources": [

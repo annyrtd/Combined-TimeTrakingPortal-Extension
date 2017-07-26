@@ -6,6 +6,8 @@ jQuery.expr[':'].contains = function(a, i, m) {
 
 var origin = window.location.origin;
 var wasCardsSetUp = true;
+var peoplePhotoLink = 'https://confirmitconnect.firmglobal.com/Search/Pages/PeopleResults.aspx';
+//var peoplePhotoLink = 'http://confirmitconnect/Search/Pages/PeopleResults.aspx';
 
 // для сортировки колонок
 function mergeSort(arrayToSort, compare) 
@@ -1818,7 +1820,7 @@ function SetProfileImages()
 					} catch (e) {}
 				}
 				else {
-					$.get("http://confirmitconnect.firmglobal.com/Search/Pages/PeopleResults.aspx?k=" + email, {}, function(data, status, xhr) {
+					$.get(peoplePhotoLink + "?k=" + email, {}, function(data, status, xhr) {
 						var updatedData = FixDownloadedDataForProfileImages(data);
 						var temp = $("<div></div>");
 						temp.html(updatedData);
@@ -2001,7 +2003,7 @@ function SetGender(card, gender) {
 }
 
 function FixDownloadedDataForProfileImages(data) {
-	return data.replace(/\/(_layouts|Style)+/g, "http://confirmitconnect.firmglobal.com/$1").replace('IMNRC', 'String.prototype.toLowerCase');
+	return data.replace(/\/(_layouts|Style)+/g, "http://confirmitconnect/$1").replace('IMNRC', 'String.prototype.toLowerCase');
 }
 
 function FixDownloadedDataForGender(data) {
