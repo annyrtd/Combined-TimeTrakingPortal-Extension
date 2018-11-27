@@ -407,7 +407,7 @@ function GetZeroReportTimeValue() {
                 var time = $(this).children(".time").eq(1).text();
 
                 if(time === "00:00" || time === "0:00") {
-                    var timeToAdd = GetNumberOfHoursPerDay() + ':00';
+                    var timeToAdd = GetNumberOfHoursPerDay() + ':30';
                     sum = SumOfTime(sum, timeToAdd);
                 }
             }
