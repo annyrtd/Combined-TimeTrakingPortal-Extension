@@ -368,13 +368,52 @@ function GetTimeOfHolidays()
 
 function GetNumberOfHoursPerDay()
 {
-	return parseInt($('table.full-size tbody tr[id^=day_]').first().find('td.time').eq(1).text());
+    var maxTimeDecimal = 0;
+
+    $("tr[id]")
+        .not(".future")
+        .not('.trTimeChecker')
+        .not('.other')
+        .not('.header').get().forEach(function(item) {
+        	var time = item.querySelectorAll('td.time')[1].innerText;
+        	var position = +time.indexOf(":");
+        	var hours = +time.substr(0, position);
+        	var minutes = +time.substr(position + 1);
+        	var decimaMinutes = +(+ minutes/60).toFixed(2);
+        	var decimalTime = +hours + decimaMinutes;
+        	maxTimeDecimal = (decimalTime > maxTimeDecimal) ? decimalTime : maxTimeDecimal;
+        });
+
+	return parseInt(maxTimeDecimal);
 }
 
 
 function GetCurrentTimeForCurrentDay()
 {	
-	return $(".summary:contains('Итог')").not(":contains('за месяц')").last().children(".time").eq(2).text();
+	return DifferenceOfTime($(".summary:contains('Итог')").not(":contains('за месяц')").last().children(".time").eq(2).text(), GetZeroReportTimeValue());
+}
+
+function GetZeroReportTimeValue() {
+	var sum = '0:00';
+
+    $("tr[id]")
+        .not(".future")
+        .not('.trTimeChecker')
+        .not('.other')
+        .not('.header')
+        .each(
+            function(index)
+            {
+                var time = $(this).children(".time").eq(1).text();
+
+                if(time === "00:00" || time === "0:00") {
+                    var timeToAdd = GetNumberOfHoursPerDay() + ':00';
+                    sum = SumOfTime(sum, timeToAdd);
+                }
+            }
+        );
+
+    return sum;
 }
 
 function GetTimeForMonthLeft()
@@ -393,10 +432,12 @@ function GetTimeForMonthLeft()
 function GetSumReportTimeForMonth()
 {
 	var sum = "00:00";
+
 	$("tr.future > td.time").each(
 		function(index)
 		{
-			sum = SumOfTime(sum, DifferenceOfTime($(this).text(), "00:30"));			
+            var time = $(this).text();
+			sum = SumOfTime(sum, time === "00:00" || time === "0:00" ? time : DifferenceOfTime(time, "00:30"));
 		}
 	);
 	
@@ -408,9 +449,25 @@ function GetSumReportTimeForMonth()
 	.each(
 		function(index)
 		{
-			sum = SumOfTime(sum, DifferenceOfTime($(this).children(".time").eq(1).text(), "00:30"));
+			var time = $(this).children(".time").eq(1).text();
+			var timeToAdd = "0:00";
+
+            if(time === "00:00" || time === "0:00") {
+                /*var workedTime = $(this).children(".time").eq(2).text();
+
+                if(workedTime !== "00:00" && workedTime !== "00:00") {
+
+				} else {
+
+				} */
+                timeToAdd = GetNumberOfHoursPerDay() + ':00';
+            } else {
+                timeToAdd = DifferenceOfTime(time, "00:30");
+			}
+
+			sum = SumOfTime(sum, timeToAdd);
 		}
-	)
+	);
 	
 	return sum;	
 }
