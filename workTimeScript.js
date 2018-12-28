@@ -390,30 +390,7 @@ function GetNumberOfHoursPerDay()
 
 function GetCurrentTimeForCurrentDay()
 {	
-	return DifferenceOfTime($(".summary:contains('Итог')").not(":contains('за месяц')").last().children(".time").eq(2).text(), GetZeroReportTimeValue());
-}
-
-function GetZeroReportTimeValue() {
-	var sum = '0:00';
-
-    $("tr[id]")
-        .not(".future")
-        .not('.trTimeChecker')
-        .not('.other')
-        .not('.header')
-        .each(
-            function(index)
-            {
-                var time = $(this).children(".time").eq(1).text();
-
-                if(time === "00:00" || time === "0:00") {
-                    var timeToAdd = GetNumberOfHoursPerDay() + ':30';
-                    sum = SumOfTime(sum, timeToAdd);
-                }
-            }
-        );
-
-    return sum;
+	return $(".summary:contains('Итог')").not(":contains('за месяц')").last().children(".time").eq(2).text();
 }
 
 function GetTimeForMonthLeft()
@@ -432,12 +409,11 @@ function GetTimeForMonthLeft()
 function GetSumReportTimeForMonth()
 {
 	var sum = "00:00";
-
 	$("tr.future > td.time").each(
 		function(index)
 		{
-            var time = $(this).text();
-			sum = SumOfTime(sum, time === "00:00" || time === "0:00" ? time : DifferenceOfTime(time, "00:30"));
+			var time = $(this).text();
+			sum = SumOfTime(sum, time === "00:00" || time === "0:00" ? time : DifferenceOfTime(time, "00:30"));		
 		}
 	);
 	
@@ -450,24 +426,9 @@ function GetSumReportTimeForMonth()
 		function(index)
 		{
 			var time = $(this).children(".time").eq(1).text();
-			var timeToAdd = "0:00";
-
-            if(time === "00:00" || time === "0:00") {
-                /*var workedTime = $(this).children(".time").eq(2).text();
-
-                if(workedTime !== "00:00" && workedTime !== "00:00") {
-
-				} else {
-
-				} */
-                timeToAdd = GetNumberOfHoursPerDay() + ':00';
-            } else {
-                timeToAdd = DifferenceOfTime(time, "00:30");
-			}
-
-			sum = SumOfTime(sum, timeToAdd);
+			sum = SumOfTime(sum, time === "00:00" || time === "0:00" ? time : DifferenceOfTime(time, "00:30"));
 		}
-	);
+	)
 	
 	return sum;	
 }
