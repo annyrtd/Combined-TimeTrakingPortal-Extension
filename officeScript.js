@@ -1877,8 +1877,8 @@ function SetAllPeopleGender() {
 					{
 						SetGender(self, gender);
 					}					
-				} else {				
-					$.get("http://morpher.ru/Demo.aspx?s=" + employee, {}, function(data, status, xhr) {
+				} else {
+					chrome.runtime.sendMessage({contentScriptQuery: "queryGender", employee: employee},	data => {
 						var updatedData = FixDownloadedDataForGender(data);
 						var temp = $("<div></div>");
 						temp.html(updatedData);
