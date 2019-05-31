@@ -1784,59 +1784,65 @@ function FilterPeople(inputText)
 function SetProfileImages() 
 {
 	ClearLocalStorage();
-	
-	$('div.card-square').each(
-		function() {
-			var self = $(this);
-			var item = self.find('div.circular').first();
-			var email = self.find('span.email').first().text();
-			var src;
-			
-			if (email)
-			{				
-				if (localStorage[email])
+
+	chrome.runtime.sendMessage({contentScriptQuery: "queryAvatars"}, data => {
+		var updatedData = FixDownloadedDataForProfileImages(data);
+		var allEmployees = eval(updatedData.match(/var values=(.*);/i)[1]);
+
+		var photoConfig = allEmployees.filter(value => value.Office.toLowerCase() === 'yaroslavl' || value.Office.toLowerCase() === 'moscow')
+			.map(value => ({email: value.WorkEmail.match(/<a href='mailto:([A-Z0-9.@]*)'>/i)[1], url: value.PictureURL.match(/src='([A-Z0-9:/\._%]*)' alt/i)[1]}))
+			.reduce((res, cur) => {
+				res[cur.email.toLowerCase()] = cur.url.indexOf('http') === 0 ? cur.url : 'http://confirmitconnect/' + cur.url;
+				return res;
+			}, {});
+
+		$('div.card-square').each(
+			function() {
+				var self = $(this);
+				var item = self.find('div.circular').first();
+				var email = self.find('span.email').first().text().toLowerCase();
+				var src;
+
+				if (email)
 				{
-					src = localStorage[email];				
-					
-					var request;
-					if(window.XMLHttpRequest) {
-						request = new XMLHttpRequest();
+					if (localStorage[email])
+					{
+						src = localStorage[email];
+
+						var request;
+						if(window.XMLHttpRequest) {
+							request = new XMLHttpRequest();
+						}
+						else {
+							request = new ActiveXObject("Microsoft.XMLHTTP");
+						}
+						request.open('GET', src, true);
+						request.onreadystatechange = function() {
+							if (request.readyState === 4){
+								if (request.status === 404) {
+									localStorage.removeItem(email);
+								}  else {
+									SetIndividualProfileImage(item, src);
+								}
+							}
+						};
+						try {
+							request.send();
+						} catch (e) {}
 					}
 					else {
-						request = new ActiveXObject("Microsoft.XMLHTTP");
-					}
-					request.open('GET', src, true);
-					request.onreadystatechange = function() {
-						if (request.readyState === 4){
-							if (request.status === 404) {  
-								localStorage.removeItem(email);
-							}  else {
-								SetIndividualProfileImage(item, src);
-							}
-						} 
-					};	
-					try {
-						request.send(); 	
-					} catch (e) {}
-				}
-				else {
-					$.get(peoplePhotoLink + "?k=" + email, {}, function(data, status, xhr) {
-						var updatedData = FixDownloadedDataForProfileImages(data);
-						var temp = $("<div></div>");
-						temp.html(updatedData);
-						
-						src = temp.find('#CSR_IMG_1').attr('src');
-							
-						if (src) 
+						src = photoConfig[email];
+
+						if (src)
 						{
 							localStorage[email] = src;
 							SetIndividualProfileImage(item, src);
 						}
-					});
+					}
 				}
 			}
-		}
-	);		
+		);
+	});
 }
 
 

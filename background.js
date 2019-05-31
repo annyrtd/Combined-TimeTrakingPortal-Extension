@@ -24,3 +24,18 @@ chrome.runtime.onMessage.addListener(
       return true;  // Will respond asynchronously.
     }
   });
+
+
+chrome.runtime.onMessage.addListener(
+  function(request, sender, sendResponse) {
+    if (request.contentScriptQuery == "queryAvatars") {
+      var url = "https://confirmitconnect.firmglobal.com/Pages/Employee-Directory.aspx";
+      fetch(url)
+          .then(response => response.text())
+		  .then(text => {
+			  return sendResponse(text);
+		  })
+          .catch(console.log)
+      return true;  // Will respond asynchronously.
+    }
+  });

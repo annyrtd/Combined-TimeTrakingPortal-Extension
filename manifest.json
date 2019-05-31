@@ -45,7 +45,9 @@
 		"http://ruportal/*",
 		"http://confirmitconnect.firmglobal.com/Search/Pages/PeopleResults.aspx*",
 		"http://morpher.ru/Demo.aspx*",
-		"https://confirmitconnect.firmglobal.com/Search/Pages/PeopleResults.aspx*"
+		"https://confirmitconnect.firmglobal.com/Search/Pages/PeopleResults.aspx*",
+		"https://confirmitconnect.firmglobal.com/Pages/Employee-Directory.aspx",
+		"http://confirmitconnect/_layouts/*"
 	],
 	
 	"web_accessible_resources": [
