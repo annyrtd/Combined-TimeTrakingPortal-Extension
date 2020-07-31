@@ -338,6 +338,11 @@ function GetAlreadyWorkedTimeForMonth()
 			time = DifferenceOfTime(time, "00:30")
 		}
 	);
+
+	if($(".summary").last().children(".text").first().text().endsWith('☼')) {
+		time = SumOfTime(time, "08:00")
+	}
+
 	return time;
 }
 
