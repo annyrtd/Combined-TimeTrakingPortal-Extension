@@ -339,10 +339,6 @@ function GetAlreadyWorkedTimeForMonth()
 		}
 	);
 
-	if($(".summary").last().children(".text").first().text().endsWith('☼')) {
-		time = SumOfTime(time, "08:00")
-	}
-
 	return time;
 }
 
@@ -434,6 +430,10 @@ function GetSumReportTimeForMonth()
 			sum = SumOfTime(sum, time === "00:00" || time === "0:00" ? time : DifferenceOfTime(time, "00:30"));
 		}
 	)
+
+	if($(".summary").last().children(".text").first().text().endsWith('☼')) {
+		sum = DifferenceOfTime(sum, "08:00")
+	}
 	
 	return sum;	
 }
